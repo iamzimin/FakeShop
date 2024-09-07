@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "FakeShop"
 include(":app")
- 
+include(":feature:registration")
+include(":core:resource")
