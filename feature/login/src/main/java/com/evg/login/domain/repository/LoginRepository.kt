@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
     suspend fun loginUser(user: User): Flow<LoginStatus>
+    fun saveUserToken(token: String)
 }

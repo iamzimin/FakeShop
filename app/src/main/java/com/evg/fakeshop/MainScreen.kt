@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,11 +18,20 @@ import androidx.navigation.navArgument
 import com.evg.LocalNavHostController
 import com.evg.login.presentation.LoginScreen
 import com.evg.registration.presentation.RegistrationScreen
+import com.evg.shared_prefs.data.repository.SharedPrefsRepositoryImpl
 import com.evg.ui.theme.FakeShopTheme
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val sharedPreferencesRepository = SharedPrefsRepositoryImpl(context = LocalContext.current)
+    val isUserAuthenticated: Boolean = sharedPreferencesRepository.getUserToken() != null
+
+    val startDestination = if (isUserAuthenticated) {
+        "login" //TODO
+    } else {
+        "registration"
+    }
 
     CompositionLocalProvider(LocalNavHostController provides navController) {
         Scaffold(
@@ -33,7 +43,7 @@ fun MainScreen() {
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = "registration"
+                    startDestination = startDestination,
                 ) {
                     composable("registration") {
                         RegistrationScreen()

@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":core:resource"))
     implementation(project(":feature:registration"))
     implementation(project(":feature:login"))
+    implementation(project(":core:shared-prefs"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

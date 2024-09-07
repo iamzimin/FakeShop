@@ -17,6 +17,9 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loginUseCases.loginUseCase.invoke(user = user)
                 .collect { response ->
+                    if (response.status == "success") {
+                        response.token?.let { loginUseCases.saveUserTokenUseCase.invoke(token = it) }
+                    }
                     callback(response)
                 }
         }
