@@ -23,3 +23,4 @@ rootProject.name = "FakeShop"
 include(":app")
 include(":feature:registration")
 include(":core:resource")
+include(":core:fakeshop-api")
