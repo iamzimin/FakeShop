@@ -13,3 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 val blue = Color(0xFF31AFF5)
 val darkTextFieldBackground = Color(0xFF262624)
 val lightTextFieldBackground = Color(0xFFF2F1EF)
+
+val darkButtonBackground = Color(0xFFD4D4D4)
+val lightButtonBackground = Color(0xFFD4D4D4)
+

@@ -1,14 +1,14 @@
-package com.evg.registration.presentation
+package com.evg
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,7 +32,7 @@ import com.evg.ui.theme.darkTextFieldBackground
 import com.evg.ui.theme.lightTextFieldBackground
 
 @Composable
-fun RegistrationTextField(
+fun AuthenticationTextField(
     placeholder: String,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
@@ -74,9 +74,9 @@ fun RegistrationTextField(
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun RegistrationTextFieldPreview() {
+fun AuthenticationTextFieldPreview() {
     FakeShopTheme {
-        RegistrationTextField(
+        AuthenticationTextField(
             placeholder = "Имя",
             value = TextFieldValue(),
             onValueChange = {},

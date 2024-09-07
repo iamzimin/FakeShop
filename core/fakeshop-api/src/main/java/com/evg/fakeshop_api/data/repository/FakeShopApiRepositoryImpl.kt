@@ -3,6 +3,8 @@ package com.evg.fakeshop_api.data.repository
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.evg.fakeshop_api.domain.models.LoginBody
+import com.evg.fakeshop_api.domain.models.LoginResponse
 import com.evg.fakeshop_api.domain.models.RegistrationBody
 import com.evg.fakeshop_api.domain.models.RegistrationResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
@@ -31,11 +33,34 @@ class FakeShopApiRepositoryImpl(
             val registrationResponse: RegistrationResponse? = try {
                 Gson().fromJson(errorBody, RegistrationResponse::class.java)
             } catch (e: Exception) {
+                println(e)
                 null
             }
             registrationResponse
         } catch (e: Exception) {
-            //println(e)
+            println(e)
+            null
+        }
+    }
+
+    override suspend fun loginUser(loginBody: LoginBody): LoginResponse? {
+        return try {
+            val user = fakeShopApi.loginUser(
+                loginBody = loginBody
+            )
+
+            return user
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()
+            val loginResponse: LoginResponse? = try {
+                Gson().fromJson(errorBody, LoginResponse::class.java)
+            } catch (e: Exception) {
+                println(e)
+                null
+            }
+            loginResponse
+        } catch (e: Exception) {
+            println(e)
             null
         }
     }

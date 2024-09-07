@@ -9,8 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.evg.LocalNavHostController
+import com.evg.login.presentation.LoginScreen
 import com.evg.registration.presentation.RegistrationScreen
 import com.evg.ui.theme.FakeShopTheme
 
@@ -26,7 +31,18 @@ fun MainScreen() {
                 modifier = Modifier
                     .padding(top = paddingValues.calculateTopPadding())
             ) {
-                RegistrationScreen()
+                NavHost(
+                    navController = navController,
+                    startDestination = "registration"
+                ) {
+                    composable("registration") {
+                        RegistrationScreen()
+                    }
+
+                    composable("login") {
+                        LoginScreen()
+                    }
+                }
             }
         }
     }

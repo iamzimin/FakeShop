@@ -1,4 +1,4 @@
-package com.evg.registration.presentation
+package com.evg.login.presentation
 
 import android.content.res.Configuration
 import android.util.Patterns
@@ -43,41 +43,38 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.evg.AuthenticationTextField
 import com.evg.LocalNavHostController
-import com.evg.registration.domain.model.RegistrationStatus
-import com.evg.registration.domain.model.User
-import com.evg.registration.presentation.viewmodel.RegistrationViewModel
+import com.evg.login.domain.model.LoginStatus
+import com.evg.login.domain.model.User
+import com.evg.login.presentation.viewmodel.LoginViewModel
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.blue
 import com.evg.ui.theme.darkTextFieldBackground
+import com.evg.ui.theme.lightButtonBackground
 import com.evg.ui.theme.lightTextFieldBackground
 
 @Composable
-fun RegistrationScreen(
-    viewModel: RegistrationViewModel = hiltViewModel<RegistrationViewModel>(),
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel<LoginViewModel>(),
 ) {
     val context = LocalContext.current
     val navController = LocalNavHostController.current
 
-    var nameText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("nameee")
-    ) }
     var emailText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("fdsfss435fgsdfge345dfsf@gmail.com")
-    ) }
+        mutableStateOf(
+            TextFieldValue("fdsfss435fgsdfge345dfsf@gmail.com")
+        ) }
     var passText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("123123123")
-    ) }
-    var pass2Text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("123123123")
-    ) }
+        mutableStateOf(
+            TextFieldValue("123123123")
+        ) }
 
-    val registrationCallback: (RegistrationStatus) -> Unit = { registrationStatus ->
-        if (registrationStatus.status == "success") {
-            Toast.makeText(context, "Успешная регистрация", Toast.LENGTH_SHORT).show()
-            navController.navigate("login")
-        } else if (registrationStatus.status == "fail") {
-            Toast.makeText(context, registrationStatus.message?: "Сервер недоступен", Toast.LENGTH_SHORT).show()
+    val loginCallback: (LoginStatus) -> Unit = { loginStatus ->
+        if (loginStatus.status == "success") {
+            Toast.makeText(context, "Вы вошли в аккаунт ${loginStatus.token}", Toast.LENGTH_SHORT).show()
+            //TODO navigate
+        } else if (loginStatus.status == "fail") {
+            Toast.makeText(context, loginStatus.message?: "Сервер недоступен", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -90,20 +87,11 @@ fun RegistrationScreen(
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 style = MaterialTheme.typography.titleLarge,
-                text = "Регистрация",
+                text = "Вход",
             )
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             val spaceBetweenTextFields = 15.dp
-            AuthenticationTextField(
-                placeholder = "Имя",
-                value = nameText,
-                onValueChange = { newText ->
-                    nameText = newText
-                }
-            )
-            Spacer(modifier = Modifier.height(spaceBetweenTextFields))
-
             AuthenticationTextField(
                 placeholder = "Электронная почта",
                 value = emailText,
@@ -123,30 +111,20 @@ fun RegistrationScreen(
             )
             Spacer(modifier = Modifier.height(spaceBetweenTextFields))
 
-            AuthenticationTextField(
-                placeholder = "Подтвердите пароль",
-                value = pass2Text,
-                onValueChange = { newText ->
-                    pass2Text = newText
-                },
-                isPassword = true,
-            )
-            Spacer(modifier = Modifier.height(spaceBetweenTextFields))
-
             Text(
                 modifier = Modifier
                     .align(alignment = Alignment.CenterHorizontally)
                     .clip(shape = RoundedCornerShape(5.dp))
                     .clickable {
-                        navController.navigate("login") {
-                            popUpTo("registration") {
+                        navController.navigate("registration") {
+                            popUpTo("login") {
                                 inclusive = true
                             }
                         }
                     }
                     .padding(horizontal = 5.dp),
                 style = MaterialTheme.typography.bodyMedium,
-                text = "Есть аккаунт? Войти",
+                text = "Нет аккаунта? Зарегистрироваться",
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -156,36 +134,26 @@ fun RegistrationScreen(
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(BorderRadius),
                 colors = ButtonColors(
-                    containerColor = blue,
+                    containerColor = lightButtonBackground,
                     contentColor = Color.Unspecified,
                     disabledContainerColor = Color.Unspecified,
                     disabledContentColor = Color.Unspecified,
                 ),
                 onClick = {
-                    if (nameText.text.isEmpty()) {
-                        Toast.makeText(context, "Имя не может быть пустым", Toast.LENGTH_SHORT).show()
-                    } else if (!Patterns.EMAIL_ADDRESS.matcher(emailText.text).matches()) {
+                    if (!Patterns.EMAIL_ADDRESS.matcher(emailText.text).matches()) {
                         Toast.makeText(context, "Неверно указан email", Toast.LENGTH_SHORT).show()
-                    } else if (passText.text != pass2Text.text) {
-                        Toast.makeText(context, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
-                    } else if (passText.text.isEmpty() || pass2Text.text.isEmpty()) {
-                        Toast.makeText(context, "Пароль не может быть пустым", Toast.LENGTH_SHORT).show()
-                    } else if (passText.text.length >= 24 || pass2Text.text.length >= 24) {
-                        Toast.makeText(context, "Максимальная длинна пароля - 24 символа", Toast.LENGTH_SHORT).show()
                     } else {
-                        viewModel.registrationUser(
+                        viewModel.loginUser(
                             user = User(
-                                    name = nameText.text,
-                                    email = emailText.text,
-                                    password = passText.text,
-                                    cpassword = pass2Text.text,
-                                ),
-                            callback = registrationCallback,
+                                email = emailText.text,
+                                password = passText.text,
+                            ),
+                            callback = loginCallback,
                         )
                     }
                 }
             ) {
-                Text(text = "Войти")
+                Text(text = "Вход")
             }
             Spacer(modifier = Modifier.height(50.dp))
         }
@@ -241,8 +209,8 @@ fun RegistrationScreen(
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun RegistrationScreenPreview() {
+fun LoginScreenPreview() {
     FakeShopTheme {
-        RegistrationScreen()
+        LoginScreen()
     }
 }
