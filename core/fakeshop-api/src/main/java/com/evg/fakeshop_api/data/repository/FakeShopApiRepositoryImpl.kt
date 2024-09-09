@@ -5,6 +5,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
+import com.evg.fakeshop_api.domain.models.ProductFilterDTO
+import com.evg.fakeshop_api.domain.models.ProductListPageResponse
+import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.models.RegistrationBody
 import com.evg.fakeshop_api.domain.models.RegistrationResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
@@ -14,6 +17,7 @@ import com.google.gson.JsonSyntaxException
 import retrofit2.Call
 import retrofit2.HttpException
 import retrofit2.Retrofit
+import retrofit2.http.Query
 
 class FakeShopApiRepositoryImpl(
     private val context: Context,
@@ -61,6 +65,25 @@ class FakeShopApiRepositoryImpl(
             loginResponse
         } catch (e: Exception) {
             println(e)
+            null
+        }
+    }
+
+    override suspend fun getAllProductsListByPage(
+        page: Int,
+        filter: ProductFilterDTO
+    ): ProductListPageResponse<ProductResponse>? {
+        return try {
+            val response = fakeShopApi.getProductsList(
+                page = page,
+                limit = filter.limit,
+                category = filter.category,
+                sort = filter.sort?.value,
+            )
+
+            return response
+        } catch (e: Exception) {
+            println(e.message)
             null
         }
     }

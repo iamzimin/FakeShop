@@ -62,6 +62,14 @@ dependencies {
     // Shimmer
     implementation(libs.shimmer.compose)
 
+    // Paging
+    implementation(libs.jetpack.paging.runtime)
+    implementation(libs.jetpack.paging.common)
+    implementation(libs.jetpack.paging.compose)
+
+    // Swipe Refresh
+    implementation(libs.swiperefresh.compose)
+
     implementation(libs.dagger.hilt)
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt.navigation)

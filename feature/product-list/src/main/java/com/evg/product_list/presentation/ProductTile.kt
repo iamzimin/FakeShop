@@ -111,7 +111,7 @@ fun ProductTile(
         Spacer(modifier = Modifier.height(5.dp))
 
         Text(
-            text = productUI.price,
+            text = productUI.price.toString(),
             style = MaterialTheme.typography.titleMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -128,8 +128,8 @@ fun ProductTilePreview() {
             productUI = ProductUI(
                 imageURL = "",
                 name = "Куртка не куртка или куртка?",
-                price = "4000",
-                sale = null,
+                price = 4000,
+                sale = 3000,
             )
         )
     }

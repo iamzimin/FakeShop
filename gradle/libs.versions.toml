@@ -77,9 +77,9 @@ dagger-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-comp
 # androidx-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "livedata" }
 
 # Paging
-# jetpack-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
-# jetpack-paging-common = { group = "androidx.paging", name = "paging-common-android", version.ref = "paging" }
-# jetpack-paging-compose = { group = "androidx.paging", name = "paging-compose-android", version.ref = "paging" }
+jetpack-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+jetpack-paging-common = { group = "androidx.paging", name = "paging-common-android", version.ref = "paging" }
+jetpack-paging-compose = { group = "androidx.paging", name = "paging-compose-android", version.ref = "paging" }
 
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }

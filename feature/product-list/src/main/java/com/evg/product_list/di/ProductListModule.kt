@@ -1,5 +1,7 @@
 package com.evg.product_list.di
 
+import com.evg.fakeshop_api.data.ProductsListPageSourceRemote
+import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.product_list.data.repository.ProductListRepositoryImpl
 import com.evg.product_list.domain.repository.ProductListRepository
 import dagger.Module
@@ -15,9 +17,12 @@ object ProductListModule {
     @Provides
     @Singleton
     fun provideProductListModule(
+        fakeShopApiRepository: FakeShopApiRepository,
+        productsListPageSourceRemote: ProductsListPageSourceRemote
     ): ProductListRepository {
         return ProductListRepositoryImpl(
-
+            fakeShopApi = fakeShopApiRepository,
+            productsListPageSourceRemote = productsListPageSourceRemote,
         )
     }
 }

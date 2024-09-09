@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +26,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -44,10 +47,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
+import com.evg.product_list.domain.mapper.toProductUI
 import com.evg.product_list.presentation.model.CategoryUI
 import com.evg.product_list.presentation.model.ProductUI
 import com.evg.product_list.presentation.viewmodel.ProductListViewModel
@@ -55,13 +64,20 @@ import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.blue
 import com.evg.ui.theme.lightButtonBackground
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductListScreen(
-    //viewModel: ProductListViewModel = hiltViewModel<ProductListViewModel>(),
+    viewModel: ProductListViewModel = hiltViewModel<ProductListViewModel>(),
 ) {
+    val products = viewModel.products.collectAsLazyPagingItems()
+    val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
+
+
     val context = LocalContext.current
     val firstCategoryRow = List(5) {
         CategoryUI(
@@ -76,8 +92,8 @@ fun ProductListScreen(
         ProductUI(
             imageURL = "",
             name = "Куртка не куртка или куртка?",
-            price = "4000",
-            sale = null,
+            price = 4000,
+            sale = 3000,
         )
     }
     
@@ -150,21 +166,69 @@ fun ProductListScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
+
+
         Box {
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth(),
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                horizontalArrangement = Arrangement.spacedBy(30.dp),
-            ) {
-                items(
-                    count = productList.size,
-                ) { index ->
-                    ProductTile(
-                        productUI = productList[index],
-                    )
+            when (products.loadState.refresh) {
+                is LoadState.Loading -> {
+                    /*LazyColumn(
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        items(10) {
+                            CharacterCardShimmer()
+                        }
+                    }*/
+                }
+                is LoadState.Error -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Products loading error. Swipe to refresh",
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+                is LoadState.NotLoading -> {
+                    SwipeRefresh(
+                        state = refreshingState,
+                        onRefresh = { viewModel.updateProducts() },
+                        indicator = { state, trigger ->
+                            SwipeRefreshIndicator(
+                                state = state,
+                                refreshTriggerDistance = trigger,
+                                backgroundColor = MaterialTheme.colorScheme.background,
+                                contentColor = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                    ) {
+
+                        LazyVerticalGrid(
+                            modifier = Modifier.fillMaxWidth(),
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalArrangement = Arrangement.spacedBy(30.dp),
+                        ) {
+                            items(
+                                count = products.itemCount,
+                                key = products.itemKey { it.id },
+                            ) { index ->
+                                val item = products[index]
+                                if (item != null) {
+                                    ProductTile(
+                                        productUI = item.toProductUI()
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+
 
             Row(
                 modifier = Modifier
