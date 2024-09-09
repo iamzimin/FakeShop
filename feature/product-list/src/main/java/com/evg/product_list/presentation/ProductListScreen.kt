@@ -78,7 +78,6 @@ fun ProductListScreen(
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
 
 
-    val context = LocalContext.current
     val firstCategoryRow = List(5) {
         CategoryUI(
             title = "Недвижимость",
@@ -88,16 +87,7 @@ fun ProductListScreen(
         )
     }
 
-    val productList = List(5) {
-        ProductUI(
-            imageURL = "",
-            name = "Куртка не куртка или куртка?",
-            price = 4000,
-            sale = 3000,
-        )
-    }
-    
-    val tabList = listOf("Рекомендации", "Свежие", "Рядом с вами")
+    val tabList = listOf("Рекомендации", "Свежее", "Рядом с вами")
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabList.size })
     val coroutineScope = rememberCoroutineScope()
 
@@ -166,18 +156,19 @@ fun ProductListScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-
-
         Box {
             when (products.loadState.refresh) {
                 is LoadState.Loading -> {
-                    /*LazyColumn(
-                        modifier = Modifier.fillMaxHeight()
-                    ) {
+                    LazyVerticalGrid(
+                        modifier = Modifier.fillMaxWidth(),
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(15.dp),
+                        horizontalArrangement = Arrangement.spacedBy(30.dp),
+                    )  {
                         items(10) {
-                            CharacterCardShimmer()
+                            ProductTileShimmer()
                         }
-                    }*/
+                    }
                 }
                 is LoadState.Error -> {
                     Box(
@@ -209,7 +200,7 @@ fun ProductListScreen(
                         LazyVerticalGrid(
                             modifier = Modifier.fillMaxWidth(),
                             columns = GridCells.Fixed(2),
-                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalArrangement = Arrangement.spacedBy(15.dp),
                             horizontalArrangement = Arrangement.spacedBy(30.dp),
                         ) {
                             items(

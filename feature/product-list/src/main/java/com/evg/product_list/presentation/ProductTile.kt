@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,6 +27,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,20 +47,24 @@ fun ProductTile(
 ) {
     val context = LocalContext.current
 
+    val imageSize = 150.dp
+
     Column(
         modifier = Modifier
-            .width(200.dp)
-            .height(300.dp)
+            .width(imageSize)
+            .padding(bottom = 10.dp)
             .clickable {
-                Toast.makeText(context, productUI.name, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, productUI.imageURL, Toast.LENGTH_SHORT).show()
             },
     ) {
         SubcomposeAsyncImage(
             model = productUI.imageURL,
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier
+                .size(imageSize)
+                .clip(RoundedCornerShape(BorderRadius)),
             contentDescription = productUI.imageURL,
             alignment = Alignment.CenterStart,
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             loading = {
                 Box(
                     modifier = Modifier
@@ -72,28 +80,23 @@ fun ProductTile(
                 }
             },
             error = {
-                /*Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .padding(5.dp),
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Error",
-                        colorFilter = ColorFilter.tint(Pink80),
-                    )
-                }*/
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(shape = RoundedCornerShape(BorderRadius))
-                        .shimmer(),
+                        .border(
+                            0.5.dp,
+                            MaterialTheme.colorScheme.onSurface,
+                            RoundedCornerShape(BorderRadius)
+                        )
                 ) {
-                    Box(
+                    Image(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.LightGray)
+                            .size(70.dp)
+                            .align(Alignment.Center),
+                        painter = painterResource(id = R.drawable.error),
+                        contentDescription = "Error",
+                        colorFilter = ColorFilter.tint(Pink80),
                     )
                 }
             },
@@ -101,21 +104,49 @@ fun ProductTile(
 
         Spacer(modifier = Modifier.height(5.dp))
 
-        Text(
-            text = productUI.name,
-            style = MaterialTheme.typography.bodySmall,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
 
-        Spacer(modifier = Modifier.height(5.dp))
+        Column(
+            modifier = Modifier
+                .height(35.dp)
+        ) {
+            Text(
+                text = productUI.name,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
 
-        Text(
-            text = productUI.price.toString(),
-            style = MaterialTheme.typography.titleMedium,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Column(
+            modifier = Modifier.height(50.dp)
+        ) {
+            if (productUI.isHaveSale) {
+                Text(
+                    text = productUI.sale,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = productUI.price,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        textDecoration = TextDecoration.LineThrough,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            } else {
+                Text(
+                    text = productUI.price,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
     }
 }
 
@@ -127,9 +158,10 @@ fun ProductTilePreview() {
         ProductTile(
             productUI = ProductUI(
                 imageURL = "",
-                name = "Куртка не куртка или куртка?",
-                price = 4000,
-                sale = 3000,
+                name = "Куртка не куртка или куртка куртка?",
+                price = "4 000 ₽",
+                sale = "3 000 ₽",
+                isHaveSale = true
             )
         )
     }

@@ -13,6 +13,8 @@ import com.evg.product_list.domain.model.ProductFilter
 import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.model.Specification
 import com.evg.product_list.presentation.model.ProductUI
+import java.text.NumberFormat
+import java.util.Locale
 
 fun ProductFilter.toProductFilterDTO(): ProductFilterDTO {
     return ProductFilterDTO(
@@ -95,10 +97,13 @@ fun SpecificationDBO.toSpecification(): Specification {
 
 
 fun Product.toProductUI(): ProductUI {
+    val numberFormat = NumberFormat.getNumberInstance(Locale("ru", "RU"))
+
     return ProductUI(
         imageURL = images.getOrNull(0),
         name = this.name,
-        price = this.price,
-        sale = this.discountedPrice,
+        price = "${numberFormat.format(this.price)} ₽",
+        sale = "${numberFormat.format(this.discountedPrice)} ₽",
+        isHaveSale = this.price > this.discountedPrice
     )
 }
