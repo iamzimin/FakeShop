@@ -72,7 +72,11 @@ fun LoginScreen(
     val loginCallback: (LoginStatus) -> Unit = { loginStatus ->
         if (loginStatus.status == "success") {
             Toast.makeText(context, "Вы вошли в аккаунт ${loginStatus.token}", Toast.LENGTH_SHORT).show()
-            //TODO navigate
+            navController.navigate("product_list") {
+                popUpTo("login") {
+                    inclusive = true
+                }
+            }
         } else if (loginStatus.status == "fail") {
             Toast.makeText(context, loginStatus.message?: "Сервер недоступен", Toast.LENGTH_SHORT).show()
         }

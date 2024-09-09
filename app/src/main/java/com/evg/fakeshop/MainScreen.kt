@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.evg.LocalNavHostController
 import com.evg.login.presentation.LoginScreen
+import com.evg.product_list.presentation.ProductListScreen
 import com.evg.registration.presentation.RegistrationScreen
 import com.evg.shared_prefs.data.repository.SharedPrefsRepositoryImpl
 import com.evg.ui.theme.FakeShopTheme
@@ -28,7 +29,7 @@ fun MainScreen() {
     val isUserAuthenticated: Boolean = sharedPreferencesRepository.getUserToken() != null
 
     val startDestination = if (isUserAuthenticated) {
-        "login" //TODO
+        "product_list"
     } else {
         "registration"
     }
@@ -39,7 +40,7 @@ fun MainScreen() {
         ) { paddingValues ->
             Box(
                 modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
+                    .padding(paddingValues)
             ) {
                 NavHost(
                     navController = navController,
@@ -51,6 +52,10 @@ fun MainScreen() {
 
                     composable("login") {
                         LoginScreen()
+                    }
+
+                    composable("product_list") {
+                        ProductListScreen()
                     }
                 }
             }
