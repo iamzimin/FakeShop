@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core:resource"))
     implementation(project(":core:fakeshop-api"))
     implementation(project(":core:shared-prefs"))
+    implementation(project(":core:database"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

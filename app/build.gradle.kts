@@ -81,4 +81,7 @@ dependencies {
     // Dagger Hilt
     implementation(libs.dagger.hilt)
     ksp(libs.dagger.hilt.compiler)
+
+    // Coil
+    implementation(libs.coil.compose)
 }

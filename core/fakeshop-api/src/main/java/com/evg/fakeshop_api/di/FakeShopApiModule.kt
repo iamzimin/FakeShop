@@ -1,6 +1,7 @@
 package com.evg.fakeshop_api.di
 
 import android.content.Context
+import com.evg.database.domain.repository.DatabaseRepository
 import com.evg.fakeshop_api.data.repository.FakeShopApiRepositoryImpl
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import dagger.Module
@@ -42,10 +43,12 @@ object FakeShopApiModule {
     fun provideFakeShopApiRepository(
         @ApplicationContext context: Context,
         fakeShopRetrofit: Retrofit,
+        databaseRepository: DatabaseRepository,
     ): FakeShopApiRepository {
         return FakeShopApiRepositoryImpl(
             context = context,
             fakeShopRetrofit = fakeShopRetrofit,
+            databaseRepository = databaseRepository,
         )
     }
 }

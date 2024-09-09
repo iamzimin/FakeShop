@@ -33,8 +33,8 @@ class ProductListViewModel @Inject constructor(
         viewModelScope.launch {
             //_isProductsLoading.value = true
             productListUseCases.getAllProductsList.invoke(filter = filter.value)
-                ?.cachedIn(viewModelScope)
-                ?.collect { products ->
+                .cachedIn(viewModelScope)
+                .collect { products ->
                     _products.value = products
                     //_isProductsLoading.value = false
                 }

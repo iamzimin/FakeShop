@@ -6,5 +6,5 @@ import com.evg.product_list.domain.model.ProductFilter
 import kotlinx.coroutines.flow.Flow
 
 interface ProductListRepository {
-    suspend fun getAllProductsList(filter: ProductFilter): Flow<PagingData<Product>>?
+    suspend fun getAllProductsList(filter: ProductFilter): Flow<PagingData<Product>>
 }

@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GetAllProductsList @Inject constructor(
     private val productListRepository: ProductListRepository
 ) {
-    suspend fun invoke(filter: ProductFilter): Flow<PagingData<Product>>? {
+    suspend fun invoke(filter: ProductFilter): Flow<PagingData<Product>> {
         return productListRepository.getAllProductsList(filter = filter)
     }
 }

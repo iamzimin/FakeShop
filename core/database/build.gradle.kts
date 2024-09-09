@@ -2,12 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serializable)
-    alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.jetbrains.kotlin.ksp)
 }
 
 android {
-    namespace = "com.evg.fakeshop_api"
+    namespace = "com.evg.database"
     compileSdk = 34
 
     defaultConfig {
@@ -36,7 +35,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:database"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -45,19 +43,19 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    //implementation(libs.commons.compress)
+    // Room
+    implementation(libs.room.common)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
 
-    //Okhttp3
-    implementation(libs.okhttp3.interceptor)
+    implementation(libs.kotlinx.json.serialization)
 
     // Dagger Hilt
     implementation(libs.dagger.hilt)
     ksp(libs.dagger.hilt.compiler)
 
     // Paging
-    //implementation(libs.jetpack.paging.runtime)
+    implementation(libs.jetpack.paging.runtime)
     implementation(libs.jetpack.paging.common)
 }

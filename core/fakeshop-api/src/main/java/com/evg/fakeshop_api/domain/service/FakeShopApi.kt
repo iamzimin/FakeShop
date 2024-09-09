@@ -27,7 +27,7 @@ interface FakeShopApi {
     @GET("app/v1/products")
     suspend fun getProductsList(
         @Query("page") page: Int,
-        @Query("limit") limit: Int?, //TODO
+        @Query("limit") pageSize: Int?, //TODO
         @Query("category") category: String?,
         @Query("sort") sort: String?,
     ): ProductListPageResponse<ProductResponse>?

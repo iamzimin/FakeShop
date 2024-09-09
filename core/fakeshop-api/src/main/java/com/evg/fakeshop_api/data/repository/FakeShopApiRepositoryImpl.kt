@@ -3,6 +3,8 @@ package com.evg.fakeshop_api.data.repository
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.evg.database.domain.repository.DatabaseRepository
+import com.evg.fakeshop_api.domain.mapper.toProduct
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
@@ -22,6 +24,7 @@ import retrofit2.http.Query
 class FakeShopApiRepositoryImpl(
     private val context: Context,
     fakeShopRetrofit: Retrofit,
+    private val databaseRepository: DatabaseRepository,
 ): FakeShopApiRepository {
     private val fakeShopApi = fakeShopRetrofit.create(FakeShopApi::class.java)
 
@@ -76,10 +79,16 @@ class FakeShopApiRepositoryImpl(
         return try {
             val response = fakeShopApi.getProductsList(
                 page = page,
-                limit = filter.limit,
+                pageSize = filter.pageSize,
                 category = filter.category,
                 sort = filter.sort?.value,
             )
+
+            response?.productsList?.map { it.toProduct() }?.let {
+                databaseRepository.insertProducts(
+                    products = it
+                )
+            }
 
             return response
         } catch (e: Exception) {
