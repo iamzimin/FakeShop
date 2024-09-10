@@ -4,6 +4,7 @@ import com.evg.database.domain.models.ProductDBO
 import com.evg.database.domain.models.ProductFilterDB
 import com.evg.database.domain.models.SortTypeDB
 import com.evg.database.domain.models.SpecificationDBO
+import com.evg.fakeshop_api.domain.mapper.toSpecificationDBO
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.models.SortTypeDTO
@@ -26,8 +27,9 @@ fun ProductFilter.toProductFilterDTO(): ProductFilterDTO {
 
 fun SortType.toSortType(): SortTypeDTO {
     return when (this) {
+        SortType.DEFAULT -> SortTypeDTO.DEFAULT
         SortType.ASCENDING -> SortTypeDTO.ASCENDING
-        SortType.DECENDING -> SortTypeDTO.DECENDING
+        SortType.DESCENDING -> SortTypeDTO.DESCENDING
     }
 }
 
@@ -43,8 +45,9 @@ fun ProductFilter.toProductFilterDB(): ProductFilterDB {
 
 fun SortType.toSortTypeDB(): SortTypeDB {
     return when (this) {
+        SortType.DEFAULT -> SortTypeDB.DEFAULT
         SortType.ASCENDING -> SortTypeDB.ASCENDING
-        SortType.DECENDING -> SortTypeDB.DECENDING
+        SortType.DESCENDING -> SortTypeDB.DESCENDING
     }
 }
 
@@ -60,7 +63,7 @@ fun ProductResponse.toProduct(): Product {
         images = this.images,
         productRating = this.productRating,
         brand = this.brand,
-        productSpecifications = this.productSpecifications.map { it.toSpecification() }
+        productSpecifications = this.productSpecifications.mapNotNull { it?.toSpecification() }
     )
 }
 

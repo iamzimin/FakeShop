@@ -4,6 +4,7 @@ import android.content.Context
 import com.evg.database.domain.repository.DatabaseRepository
 import com.evg.fakeshop_api.data.repository.FakeShopApiRepositoryImpl
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

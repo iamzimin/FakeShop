@@ -43,7 +43,7 @@ import com.valentinilk.shimmer.shimmer
 fun ProductTileShimmer() {
     val context = LocalContext.current
 
-    val imageSize = 150.dp
+    val imageSize = 160.dp
     val shimmerColor = Color.Gray
 
     Column(

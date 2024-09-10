@@ -47,7 +47,7 @@ fun ProductTile(
 ) {
     val context = LocalContext.current
 
-    val imageSize = 150.dp
+    val imageSize = 160.dp
 
     Column(
         modifier = Modifier

@@ -11,7 +11,7 @@ import com.evg.database.domain.models.SortTypeDB
 interface ProductsDao {
     @Query(
         """SELECT * FROM productdbo
-            WHERE (:category IS NULL OR category = :category)
+            WHERE (:category IS NULL OR category LIKE '%' || :category || '%') 
             ORDER BY 
                 CASE WHEN :sort = 'ASCENDING' THEN price END ASC,
                 CASE WHEN :sort = 'DESCENDING' THEN price END DESC

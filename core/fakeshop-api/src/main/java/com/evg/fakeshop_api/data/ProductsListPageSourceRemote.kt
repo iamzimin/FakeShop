@@ -7,6 +7,7 @@ import com.evg.fakeshop_api.domain.models.ProductFilterDTO
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.fakeshop_api.domain.service.FakeShopApi
+import java.lang.Error
 import javax.inject.Inject
 
 class ProductsListPageSourceRemote @Inject constructor(
@@ -27,9 +28,10 @@ class ProductsListPageSourceRemote @Inject constructor(
             val response = fakeShopApiRepository.getAllProductsListByPage(
                 page = page,
                 filter = filter,
-            )
-            val products = response?.productsList ?: emptyList() //TODO
-            val count = response?.count ?: 0
+            ) ?: throw NullPointerException("Response is null")
+
+            val products = response.productsList ?: throw NullPointerException("Response is null") //TODO
+            val count = response.count ?: throw NullPointerException("Response is null")
 
             val nextPage = if (count >= products.size) {
                 page + 1
@@ -44,13 +46,5 @@ class ProductsListPageSourceRemote @Inject constructor(
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
-    }
-
-    private fun getPage(page: String?): Int? {
-        if (page == null) return null
-
-        val uri = Uri.parse(page)
-        val pageQuery = uri.getQueryParameter("page")
-        return pageQuery?.toInt()
     }
 }

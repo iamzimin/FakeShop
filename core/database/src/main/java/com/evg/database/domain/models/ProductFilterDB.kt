@@ -1,12 +1,13 @@
 package com.evg.database.domain.models
 
 data class ProductFilterDB(
-    var pageSize: Int = 10, //TODO
+    var pageSize: Int = 10,
     var category: String? = null,
-    var sort: SortTypeDB? = null,
+    var sort: SortTypeDB = SortTypeDB.DEFAULT,
 )
 
 enum class SortTypeDB {
+    DEFAULT,
     ASCENDING,
-    DECENDING,
+    DESCENDING,
 }

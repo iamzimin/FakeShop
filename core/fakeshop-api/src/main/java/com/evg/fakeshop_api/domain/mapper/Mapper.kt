@@ -5,7 +5,7 @@ import com.evg.database.domain.models.SpecificationDBO
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.models.SpecificationResponse
 
-fun ProductResponse.toProduct(): ProductDBO {
+fun ProductResponse.toProductDBO(): ProductDBO {
     return ProductDBO(
         id = this.id,
         name = this.name,
@@ -15,11 +15,11 @@ fun ProductResponse.toProduct(): ProductDBO {
         images = this.images,
         productRating = this.productRating,
         brand = this.brand,
-        productSpecifications = this.productSpecifications.map { it.toSpecification() }
+        productSpecifications = this.productSpecifications.mapNotNull { it?.toSpecificationDBO() }
     )
 }
 
-fun SpecificationResponse.toSpecification(): SpecificationDBO {
+fun SpecificationResponse.toSpecificationDBO(): SpecificationDBO {
     return SpecificationDBO(
         key = this.key,
         value = this.value

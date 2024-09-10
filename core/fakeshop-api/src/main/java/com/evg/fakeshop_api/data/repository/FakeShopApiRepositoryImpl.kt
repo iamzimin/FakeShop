@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.evg.database.domain.repository.DatabaseRepository
-import com.evg.fakeshop_api.domain.mapper.toProduct
+import com.evg.fakeshop_api.domain.mapper.toProductDBO
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
@@ -15,11 +15,8 @@ import com.evg.fakeshop_api.domain.models.RegistrationResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.fakeshop_api.domain.service.FakeShopApi
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
-import retrofit2.Call
 import retrofit2.HttpException
 import retrofit2.Retrofit
-import retrofit2.http.Query
 
 class FakeShopApiRepositoryImpl(
     private val context: Context,
@@ -84,7 +81,7 @@ class FakeShopApiRepositoryImpl(
                 sort = filter.sort?.value,
             )
 
-            response?.productsList?.map { it.toProduct() }?.let {
+            response?.productsList?.map { it.toProductDBO() }?.let {
                 databaseRepository.insertProducts(
                     products = it
                 )
@@ -92,8 +89,8 @@ class FakeShopApiRepositoryImpl(
 
             return response
         } catch (e: Exception) {
-            println(e.message)
-            null
+            println(e.message) //TODO  retrofit2.HttpException: HTTP 521 Response{protocol=h2, code=521, message=, url=https://fakeshopapi-l2ng.onrender.com/app/v1/products?page=1&limit=10}
+            null // java.net.SocketTimeoutException: timeout
         }
     }
 

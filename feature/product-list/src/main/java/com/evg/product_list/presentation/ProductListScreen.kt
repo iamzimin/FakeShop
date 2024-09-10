@@ -20,9 +20,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -39,8 +42,12 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,6 +64,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.evg.product_list.domain.mapper.toProductUI
+import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.presentation.model.CategoryUI
 import com.evg.product_list.presentation.model.ProductUI
 import com.evg.product_list.presentation.viewmodel.ProductListViewModel
@@ -76,20 +84,44 @@ fun ProductListScreen(
 ) {
     val products = viewModel.products.collectAsLazyPagingItems()
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
+    var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
 
+    val firstCategoryRow = listOf(
+        CategoryUI(title = "Авто", originalName = "automotive"),
+        CategoryUI(title = "Сумки", originalName = "bags"),
+        CategoryUI(title = "Обувь", originalName = "footwear"),
+        CategoryUI(title = "Шампунь", originalName = "shampoo"),
+        CategoryUI(title = "Шорты", originalName = "shorts"),
+    )
 
-    val firstCategoryRow = List(5) {
-        CategoryUI(
-            title = "Недвижимость",
-            image = Icons.Filled.Person,
-            width = 200,
-            originalName = "Auto",
-        )
-    }
+    val secondCategoryRow = listOf(
+        CategoryUI(title = "Столы", originalName = "table"),
+        CategoryUI(title = "Инструменты", originalName = "tools"),
+        CategoryUI(title = "Мебель", originalName = "furniture"),
+        CategoryUI(title = "Оборудование", originalName = "hardware"),
+        CategoryUI(title = "Лампа", originalName = "lamp"),
+    )
 
     val tabList = listOf("Рекомендации", "Свежее", "Рядом с вами")
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabList.size })
     val coroutineScope = rememberCoroutineScope()
+
+    var isShowDialog by remember { mutableStateOf(false) }
+    var currentOption by remember { mutableStateOf(viewModel.getSortType()) }
+
+    if (isShowDialog) {
+        SortTypeDialog(
+            hideDialog = { isShowDialog = false },
+            currentOption = viewModel.getSortType(),
+            selectedOption = {
+                currentOption = it
+            },
+            onConfirm = {
+                viewModel.setSortType(currentOption)
+                isShowDialog = false
+            },
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -104,6 +136,11 @@ fun ProductListScreen(
             ) { index ->
                 CategoryTile(
                     categoryUI = firstCategoryRow[index],
+                    isSelected = selectedTile == firstCategoryRow[index].originalName,
+                    onTileClick = { selectedCategory ->
+                        viewModel.setCategoryFilter(category = selectedCategory)
+                        selectedTile = selectedCategory
+                    }
                 )
             }
         }
@@ -114,14 +151,19 @@ fun ProductListScreen(
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             items(
-                count = firstCategoryRow.size,
+                count = secondCategoryRow.size,
             ) { index ->
                 CategoryTile(
-                    categoryUI = firstCategoryRow[index],
+                    categoryUI = secondCategoryRow[index],
+                    isSelected = selectedTile == secondCategoryRow[index].originalName,
+                    onTileClick = { selectedCategory ->
+                        viewModel.setCategoryFilter(category = selectedCategory)
+                        selectedTile = selectedCategory
+                    }
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(30.dp))
 
         ScrollableTabRow(
@@ -156,7 +198,10 @@ fun ProductListScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Box {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+        ) {
             when (products.loadState.refresh) {
                 is LoadState.Loading -> {
                     LazyVerticalGrid(
@@ -197,6 +242,7 @@ fun ProductListScreen(
                         },
                     ) {
 
+                        // TODO products.size - 0
                         LazyVerticalGrid(
                             modifier = Modifier.fillMaxWidth(),
                             columns = GridCells.Fixed(2),
@@ -218,98 +264,100 @@ fun ProductListScreen(
                     }
                 }
             }
-
-
-
-            Row(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.background)
-                    .align(Alignment.BottomCenter)
-                    .padding(vertical = 10.dp)
-            ) {
-                val buttonSize = 40.dp
-
-                Button(
-                    modifier = Modifier.height(buttonSize),
-                    shape = RoundedCornerShape(BorderRadius),
-                    colors = ButtonColors(
-                        containerColor = lightButtonBackground,
-                        contentColor = Color.Unspecified,
-                        disabledContainerColor = Color.Unspecified,
-                        disabledContentColor = Color.Unspecified,
-                    ),
-                    onClick = { /*TODO*/ },
-                    contentPadding = PaddingValues(horizontal = 10.dp),
-                ) {
-                    Text(
-                        text = "Показать по",
-                        color = Color.Black,
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Button(
-                    modifier = Modifier.size(40.dp),
-                    shape = RoundedCornerShape(BorderRadius),
-                    colors = ButtonColors(
-                        containerColor = lightButtonBackground,
-                        contentColor = Color.Unspecified,
-                        disabledContainerColor = Color.Unspecified,
-                        disabledContentColor = Color.Unspecified,
-                    ),
-                    onClick = { /*TODO*/ },
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Text(
-                        text = "10",
-                        color = Color.Black,
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Button(
-                    modifier = Modifier.size(40.dp),
-                    shape = RoundedCornerShape(BorderRadius),
-                    colors = ButtonColors(
-                        containerColor = lightButtonBackground,
-                        contentColor = Color.Unspecified,
-                        disabledContainerColor = Color.Unspecified,
-                        disabledContentColor = Color.Unspecified,
-                    ),
-                    onClick = { /*TODO*/ },
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Text(
-                        text = "20",
-                        color = Color.Black,
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Button(
-                    modifier = Modifier.size(40.dp),
-                    shape = RoundedCornerShape(BorderRadius),
-                    colors = ButtonColors(
-                        containerColor = lightButtonBackground,
-                        contentColor = Color.Unspecified,
-                        disabledContainerColor = Color.Unspecified,
-                        disabledContentColor = Color.Unspecified,
-                    ),
-                    onClick = { /*TODO*/ },
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Text(
-                        text = "30",
-                        color = Color.Black,
-                    )
-                }
-            }
         }
 
+        Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+        ) {
+            val buttonSize = 40.dp
 
+            Button(
+                modifier = Modifier.height(buttonSize),
+                shape = RoundedCornerShape(BorderRadius),
+                colors = ButtonColors(
+                    containerColor = lightButtonBackground,
+                    contentColor = Color.Unspecified,
+                    disabledContainerColor = Color.Unspecified,
+                    disabledContentColor = Color.Unspecified,
+                ),
+                onClick = {
+                    isShowDialog = true
+                },
+                contentPadding = PaddingValues(horizontal = 10.dp),
+            ) {
+                Text(
+                    text = "Показать по",
+                    color = Color.Black,
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                modifier = Modifier.size(40.dp),
+                shape = RoundedCornerShape(BorderRadius),
+                colors = ButtonColors(
+                    containerColor = lightButtonBackground,
+                    contentColor = Color.Unspecified,
+                    disabledContainerColor = Color.Unspecified,
+                    disabledContentColor = Color.Unspecified,
+                ),
+                onClick = {
+                    viewModel.setCategoryPageSize(pageSize = 10)
+                },
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                Text(
+                    text = "10",
+                    color = Color.Black,
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Button(
+                modifier = Modifier.size(40.dp),
+                shape = RoundedCornerShape(BorderRadius),
+                colors = ButtonColors(
+                    containerColor = lightButtonBackground,
+                    contentColor = Color.Unspecified,
+                    disabledContainerColor = Color.Unspecified,
+                    disabledContentColor = Color.Unspecified,
+                ),
+                onClick = {
+                    viewModel.setCategoryPageSize(pageSize = 20)
+                },
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                Text(
+                    text = "20",
+                    color = Color.Black,
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Button(
+                modifier = Modifier.size(40.dp),
+                shape = RoundedCornerShape(BorderRadius),
+                colors = ButtonColors(
+                    containerColor = lightButtonBackground,
+                    contentColor = Color.Unspecified,
+                    disabledContainerColor = Color.Unspecified,
+                    disabledContentColor = Color.Unspecified,
+                ),
+                onClick = {
+                    viewModel.setCategoryPageSize(pageSize = 30)
+                },
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                Text(
+                    text = "30",
+                    color = Color.Black,
+                )
+            }
+        }
 
 
     }

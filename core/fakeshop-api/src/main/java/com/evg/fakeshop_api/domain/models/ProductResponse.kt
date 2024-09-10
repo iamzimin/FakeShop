@@ -1,5 +1,7 @@
 package com.evg.fakeshop_api.domain.models
 
+import com.evg.fakeshop_api.domain.mapper.ProductSpecificationsResponseDeserializer
+import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 
 data class ProductResponse(
@@ -12,9 +14,10 @@ data class ProductResponse(
     @SerializedName("description") val description: String,
     @SerializedName("product_rating") val productRating: Double,
     @SerializedName("brand") val brand: String?,
-    @SerializedName("product_specifications") val productSpecifications: List<SpecificationResponse>
+    @SerializedName("product_specifications") val productSpecifications: List<SpecificationResponse?>
 )
 
+@JsonAdapter(ProductSpecificationsResponseDeserializer::class)
 data class SpecificationResponse(
     @SerializedName("key") val key: String?,
     @SerializedName("value") val value: String

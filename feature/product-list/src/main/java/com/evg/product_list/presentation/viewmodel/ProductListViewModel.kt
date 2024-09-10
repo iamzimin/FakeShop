@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.ProductFilter
+import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.usecase.ProductListUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,23 +23,34 @@ class ProductListViewModel @Inject constructor(
     private val _products = MutableStateFlow<PagingData<Product>>(PagingData.empty())
     val products: StateFlow<PagingData<Product>> get() = _products
 
-/*    private val _isProductsLoading = MutableStateFlow(true)
-    val isProductsLoading: StateFlow<Boolean> = _isProductsLoading*/
-
     init {
         updateProducts()
     }
 
     fun updateProducts() {
         viewModelScope.launch {
-            //_isProductsLoading.value = true
             productListUseCases.getAllProductsList.invoke(filter = filter.value)
                 .cachedIn(viewModelScope)
                 .collect { products ->
                     _products.value = products
-                    //_isProductsLoading.value = false
                 }
         }
     }
+
+    fun setCategoryFilter(category: String?) {
+        filter.value = filter.value.copy(category = category)
+        updateProducts()
+    }
+
+    fun setCategoryPageSize(pageSize: Int) {
+        filter.value = filter.value.copy(pageSize = pageSize)
+        updateProducts()
+    }
+
+    fun setSortType(sortType: SortType) {
+        filter.value = filter.value.copy(sort = sortType)
+        updateProducts()
+    }
+    fun getSortType() = filter.value.sort
 
 }

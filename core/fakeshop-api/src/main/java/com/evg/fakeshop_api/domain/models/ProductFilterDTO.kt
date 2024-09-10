@@ -1,12 +1,13 @@
 package com.evg.fakeshop_api.domain.models
 
 data class ProductFilterDTO(
-    var pageSize: Int = 10, //TODO
+    var pageSize: Int = 10,
     var category: String? = null,
-    var sort: SortTypeDTO? = null,
+    var sort: SortTypeDTO = SortTypeDTO.DEFAULT,
 )
 
-enum class SortTypeDTO(val value: String) {
-    ASCENDING("+price"),
-    DECENDING("-price"),
+enum class SortTypeDTO(val value: String?) {
+    DEFAULT(null),
+    ASCENDING("price"),
+    DESCENDING("-price"),
 }

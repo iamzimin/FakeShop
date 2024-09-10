@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FakeShop</string>
+
+
+    <string name="sort">Sort</string>
+    <string name="by_default">By default</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
 </resources>
