@@ -8,6 +8,7 @@ import com.evg.fakeshop_api.domain.mapper.toProductDBO
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
+import com.evg.fakeshop_api.domain.models.ProductInfoResponse
 import com.evg.fakeshop_api.domain.models.ProductListPageResponse
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.models.RegistrationBody
@@ -78,12 +79,31 @@ class FakeShopApiRepositoryImpl(
                 page = page,
                 pageSize = filter.pageSize,
                 category = filter.category,
-                sort = filter.sort?.value,
+                sort = filter.sort.value,
             )
 
             response?.productsList?.map { it.toProductDBO() }?.let {
                 databaseRepository.insertProducts(
                     products = it
+                )
+            }
+
+            return response
+        } catch (e: Exception) {
+            println(e.message) //TODO  retrofit2.HttpException: HTTP 521 Response{protocol=h2, code=521, message=, url=https://fakeshopapi-l2ng.onrender.com/app/v1/products?page=1&limit=10}
+            null // java.net.SocketTimeoutException: timeout
+        }
+    }
+
+    override suspend fun getProductById(id: String): ProductInfoResponse<ProductResponse>? {
+        return try {
+            val response = fakeShopApi.getProductById(
+                id = id
+            )
+
+            response?.product?.toProductDBO()?.let {
+                databaseRepository.insertProduct(
+                    product = it
                 )
             }
 

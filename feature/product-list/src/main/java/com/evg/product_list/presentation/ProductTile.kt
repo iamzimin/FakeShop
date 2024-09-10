@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import coil.compose.SubcomposeAsyncImage
+import com.evg.LocalNavHostController
 import com.evg.product_list.presentation.model.ProductUI
 import com.evg.resource.R
 import com.evg.ui.theme.BorderRadius
@@ -46,6 +47,7 @@ fun ProductTile(
     productUI: ProductUI,
 ) {
     val context = LocalContext.current
+    val navController = LocalNavHostController.current
 
     val imageSize = 160.dp
 
@@ -54,7 +56,7 @@ fun ProductTile(
             .width(imageSize)
             .padding(bottom = 10.dp)
             .clickable {
-                Toast.makeText(context, productUI.imageURL, Toast.LENGTH_SHORT).show()
+                navController.navigate("product_info/${productUI.id}")
             },
     ) {
         SubcomposeAsyncImage(
@@ -157,6 +159,7 @@ fun ProductTilePreview() {
     FakeShopTheme {
         ProductTile(
             productUI = ProductUI(
+                id = "null",
                 imageURL = "",
                 name = "Куртка не куртка или куртка куртка?",
                 price = "4 000 ₽",

@@ -48,6 +48,7 @@ import com.evg.registration.domain.model.User
 import com.evg.registration.presentation.viewmodel.RegistrationViewModel
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
+import com.evg.ui.theme.HorizontalPadding
 import com.evg.ui.theme.blue
 import com.evg.ui.theme.darkTextFieldBackground
 import com.evg.ui.theme.lightTextFieldBackground
@@ -85,7 +86,7 @@ fun RegistrationScreen(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = HorizontalPadding)
         ) {
             Spacer(modifier = Modifier.height(40.dp))
             Text(

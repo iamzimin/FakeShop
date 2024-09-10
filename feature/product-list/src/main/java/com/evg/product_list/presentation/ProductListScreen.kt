@@ -63,13 +63,14 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import com.evg.product_list.domain.mapper.toProductUI
 import com.evg.product_list.domain.model.SortType
+import com.evg.product_list.presentation.mapper.toProductUI
 import com.evg.product_list.presentation.model.CategoryUI
 import com.evg.product_list.presentation.model.ProductUI
 import com.evg.product_list.presentation.viewmodel.ProductListViewModel
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
+import com.evg.ui.theme.HorizontalPadding
 import com.evg.ui.theme.blue
 import com.evg.ui.theme.lightButtonBackground
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -126,7 +127,7 @@ fun ProductListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 40.dp, start = 20.dp, end = 20.dp),
+            .padding(top = 40.dp, start = HorizontalPadding, end = HorizontalPadding),
     ) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(5.dp)

@@ -3,6 +3,7 @@ package com.evg.fakeshop_api.domain.repository
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
+import com.evg.fakeshop_api.domain.models.ProductInfoResponse
 import com.evg.fakeshop_api.domain.models.ProductListPageResponse
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.models.RegistrationBody
@@ -13,6 +14,7 @@ interface FakeShopApiRepository {
     suspend fun loginUser(loginBody: LoginBody): LoginResponse?
 
     suspend fun getAllProductsListByPage(page: Int, filter: ProductFilterDTO): ProductListPageResponse<ProductResponse>?
+    suspend fun getProductById(id: String): ProductInfoResponse<ProductResponse>?
 
     fun isInternetAvailable(): Boolean
 }

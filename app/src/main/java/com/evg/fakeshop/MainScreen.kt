@@ -1,5 +1,6 @@
 package com.evg.fakeshop
 
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.evg.LocalNavHostController
 import com.evg.login.presentation.LoginScreen
+import com.evg.product_info.presentation.ProductInfoRoot
 import com.evg.product_list.presentation.ProductListScreen
 import com.evg.registration.presentation.RegistrationScreen
 import com.evg.shared_prefs.data.repository.SharedPrefsRepositoryImpl
@@ -46,16 +49,41 @@ fun MainScreen() {
                     navController = navController,
                     startDestination = startDestination,
                 ) {
-                    composable("registration") {
+                    composable(
+                        route = "registration"
+                    ) {
                         RegistrationScreen()
                     }
 
-                    composable("login") {
+                    composable( route = "login") {
                         LoginScreen()
                     }
 
-                    composable("product_list") {
+                    composable(
+                        route = "product_list"
+                    ) {
                         ProductListScreen()
+                    }
+
+                    composable(
+                        route = "product_info/{id}",
+                        deepLinks = listOf(
+                            navDeepLink {
+                                uriPattern = "https://fakeshopapi-l2ng.onrender.com/app/v1/products/{id}"
+                                action = Intent.ACTION_VIEW
+                            },
+                        ),
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.StringType
+                                defaultValue = "null"
+                            }
+                        )
+                    ) { entry ->
+                        val id = entry.arguments?.getString("id") ?: "null"
+                        ProductInfoRoot(
+                            productId = id
+                        )
                     }
                 }
             }

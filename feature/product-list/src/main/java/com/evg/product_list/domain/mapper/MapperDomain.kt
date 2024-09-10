@@ -4,7 +4,6 @@ import com.evg.database.domain.models.ProductDBO
 import com.evg.database.domain.models.ProductFilterDB
 import com.evg.database.domain.models.SortTypeDB
 import com.evg.database.domain.models.SpecificationDBO
-import com.evg.fakeshop_api.domain.mapper.toSpecificationDBO
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.models.SortTypeDTO
@@ -94,19 +93,5 @@ fun SpecificationDBO.toSpecification(): Specification {
     return Specification(
         key = this.key,
         value = this.value
-    )
-}
-
-
-
-fun Product.toProductUI(): ProductUI {
-    val numberFormat = NumberFormat.getNumberInstance(Locale("ru", "RU"))
-
-    return ProductUI(
-        imageURL = images.getOrNull(0),
-        name = this.name,
-        price = "${numberFormat.format(this.price)} ₽",
-        sale = "${numberFormat.format(this.discountedPrice)} ₽",
-        isHaveSale = this.price > this.discountedPrice
     )
 }

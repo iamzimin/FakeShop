@@ -11,6 +11,7 @@ data class ProductDBO(
     val name: String,
     val category: List<String>,
     val price: Int,
+    val description: String,
     val discountedPrice: Int,
     val images: List<String>,
     val productRating: Double,

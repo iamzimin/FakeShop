@@ -11,6 +11,7 @@ fun ProductResponse.toProductDBO(): ProductDBO {
         name = this.name,
         category = this.category,
         price = this.price,
+        description = this.description,
         discountedPrice = this.discountedPrice,
         images = this.images,
         productRating = this.productRating,
