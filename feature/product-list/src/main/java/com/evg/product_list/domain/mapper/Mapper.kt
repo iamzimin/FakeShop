@@ -21,7 +21,7 @@ fun ProductFilter.toProductFilterDTO(): ProductFilterDTO {
     return ProductFilterDTO(
         pageSize = this.pageSize,
         category = this.category,
-        sort = this.sort?.toSortType()
+        sort = this.sort.toSortType()
     )
 }
 
@@ -39,7 +39,7 @@ fun ProductFilter.toProductFilterDB(): ProductFilterDB {
     return ProductFilterDB(
         pageSize = this.pageSize,
         category = this.category,
-        sort = this.sort?.toSortTypeDB()
+        sort = this.sort.toSortTypeDB()
     )
 }
 
