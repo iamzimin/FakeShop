@@ -6,4 +6,61 @@
     <string name="by_default">By default</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+
+    <string name="successful_registration">Successful registration</string>
+    <string name="logged_account">You are logged in to your account</string>
+    <string name="server_unavailable">The server is unavailable</string>
+
+    <string name="registration">Registration</string>
+    <string name="login">Login</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="have_account_enter">Do you have an account? Enter</string>
+    <string name="no_account_register">No account? Register</string>
+
+    <string name="error_empty_name">Name cannot be empty</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_empty_password">Password cannot be empty</string>
+    <string name="error_password_length">Maximum password length is 24 characters</string>
+
+    <string name="enter">Enter</string>
+    <string name="search">Search</string>
+    <string name="favorites">Favorites</string>
+    <string name="ads">Ads</string>
+    <string name="messages">Messages</string>
+    <string name="profile">Profile</string>
+
+    <string name="buy">Buy</string>
+    <string name="show_by">Show by</string>
+    <string name="no_information">No information available</string>
+    <string name="hide">Hide</string>
+    <string name="read_more">Read more</string>
+    <string name="description">Description</string>
+    <string name="specifications">Specifications</string>
+
+    <string name="category">Category</string>
+    <string name="condition">Condition</string>
+    <string name="size">Size</string>
+    <string name="fabric">Main fabric</string>
+    <string name="brand">Brand</string>
+    <string name="color">Color</string>
+
+    <string name="recommendations">Recommendations</string>
+    <string name="latest">Latest</string>
+    <string name="nearby">Nearby</string>
+
+    <string name="automotive">Automotive</string>
+    <string name="bags">Bags</string>
+    <string name="footwear">Footwear</string>
+    <string name="shampoo">Shampoo</string>
+    <string name="shorts">Shorts</string>
+    <string name="table">Table</string>
+    <string name="tools">Tools</string>
+    <string name="furniture">Furniture</string>
+    <string name="hardware">Hardware</string>
+    <string name="lamp">Lamp</string>
+
 </resources>

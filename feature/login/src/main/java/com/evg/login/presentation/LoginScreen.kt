@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,7 @@ import com.evg.LocalNavHostController
 import com.evg.login.domain.model.LoginStatus
 import com.evg.login.domain.model.User
 import com.evg.login.presentation.viewmodel.LoginViewModel
+import com.evg.resource.R
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.HorizontalPadding
@@ -71,16 +73,21 @@ fun LoginScreen(
             TextFieldValue("123123123")
         ) }
 
+    val loggedAccount = stringResource(R.string.logged_account)
+    val serverUnavailable = stringResource(R.string.server_unavailable)
+
+    val errorInvalidEmail = stringResource(R.string.error_invalid_email)
+
     val loginCallback: (LoginStatus) -> Unit = { loginStatus ->
         if (loginStatus.status == "success") {
-            Toast.makeText(context, "Вы вошли в аккаунт ${loginStatus.token}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "$loggedAccount ${loginStatus.token}", Toast.LENGTH_SHORT).show()
             navController.navigate("product_list") {
                 popUpTo("login") {
                     inclusive = true
                 }
             }
         } else if (loginStatus.status == "fail") {
-            Toast.makeText(context, loginStatus.message?: "Сервер недоступен", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, loginStatus.message?: serverUnavailable, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -93,13 +100,13 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 style = MaterialTheme.typography.titleLarge,
-                text = "Вход",
+                text = stringResource(R.string.enter),
             )
             Spacer(modifier = Modifier.height(20.dp))
 
             val spaceBetweenTextFields = 15.dp
             AuthenticationTextField(
-                placeholder = "Электронная почта",
+                placeholder = stringResource(R.string.email),
                 value = emailText,
                 onValueChange = { newText ->
                     emailText = newText
@@ -108,7 +115,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(spaceBetweenTextFields))
 
             AuthenticationTextField(
-                placeholder = "Пароль",
+                placeholder = stringResource(R.string.password),
                 value = passText,
                 onValueChange = { newText ->
                     passText = newText
@@ -130,7 +137,7 @@ fun LoginScreen(
                     }
                     .padding(horizontal = 5.dp),
                 style = MaterialTheme.typography.bodyMedium,
-                text = "Нет аккаунта? Зарегистрироваться",
+                text = stringResource(R.string.no_account_register),
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -147,7 +154,7 @@ fun LoginScreen(
                 ),
                 onClick = {
                     if (!Patterns.EMAIL_ADDRESS.matcher(emailText.text).matches()) {
-                        Toast.makeText(context, "Неверно указан email", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorInvalidEmail, Toast.LENGTH_SHORT).show()
                     } else {
                         loginUser(
                             User(
@@ -159,18 +166,18 @@ fun LoginScreen(
                     }
                 }
             ) {
-                Text(text = "Вход")
+                Text(text = stringResource(R.string.enter))
             }
             Spacer(modifier = Modifier.height(50.dp))
         }
 
         val profileIndex = 4
         val items = listOf(
-            "Поиск" to Icons.Default.Search,
-            "Избранное" to Icons.Default.Favorite,
-            "Объявления" to Icons.AutoMirrored.Filled.List,
-            "Сообщения" to Icons.Default.Call,
-            "Профиль" to Icons.Default.Person
+            stringResource(R.string.search) to Icons.Default.Search,
+            stringResource(R.string.favorites) to Icons.Default.Favorite,
+            stringResource(R.string.ads) to Icons.AutoMirrored.Filled.List,
+            stringResource(R.string.messages) to Icons.Default.Call,
+            stringResource(R.string.profile) to Icons.Default.Person
         )
 
         NavigationBar(

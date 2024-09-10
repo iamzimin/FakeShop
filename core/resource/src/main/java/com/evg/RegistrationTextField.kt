@@ -77,7 +77,7 @@ fun AuthenticationTextField(
 fun AuthenticationTextFieldPreview() {
     FakeShopTheme {
         AuthenticationTextField(
-            placeholder = "Имя",
+            placeholder = "Name",
             value = TextFieldValue(),
             onValueChange = {},
         )

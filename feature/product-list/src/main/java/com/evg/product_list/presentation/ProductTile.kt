@@ -161,7 +161,7 @@ fun ProductTilePreview() {
             productUI = ProductUI(
                 id = "null",
                 imageURL = "",
-                name = "Куртка не куртка или куртка куртка?",
+                name = "A jacket is not a jacket or a jacket is a jacket?",
                 price = "4 000 ₽",
                 sale = "3 000 ₽",
                 isHaveSale = true

@@ -53,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,6 +66,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.evg.resource.R
 import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.model.Specification
@@ -98,22 +100,26 @@ fun ProductListScreen(
     var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
 
     val firstCategoryRow = listOf(
-        CategoryUI(title = "Авто", originalName = "automotive"),
-        CategoryUI(title = "Сумки", originalName = "bags"),
-        CategoryUI(title = "Обувь", originalName = "footwear"),
-        CategoryUI(title = "Шампунь", originalName = "shampoo"),
-        CategoryUI(title = "Шорты", originalName = "shorts"),
+        CategoryUI(title = stringResource(R.string.automotive), originalName = "automotive"),
+        CategoryUI(title = stringResource(R.string.bags), originalName = "bags"),
+        CategoryUI(title = stringResource(R.string.footwear), originalName = "footwear"),
+        CategoryUI(title = stringResource(R.string.shampoo), originalName = "shampoo"),
+        CategoryUI(title = stringResource(R.string.shorts), originalName = "shorts"),
     )
 
     val secondCategoryRow = listOf(
-        CategoryUI(title = "Столы", originalName = "table"),
-        CategoryUI(title = "Инструменты", originalName = "tools"),
-        CategoryUI(title = "Мебель", originalName = "furniture"),
-        CategoryUI(title = "Оборудование", originalName = "hardware"),
-        CategoryUI(title = "Лампа", originalName = "lamp"),
+        CategoryUI(title = stringResource(R.string.table), originalName = "table"),
+        CategoryUI(title = stringResource(R.string.tools), originalName = "tools"),
+        CategoryUI(title = stringResource(R.string.furniture), originalName = "furniture"),
+        CategoryUI(title = stringResource(R.string.hardware), originalName = "hardware"),
+        CategoryUI(title = stringResource(R.string.lamp), originalName = "lamp"),
     )
 
-    val tabList = listOf("Рекомендации", "Свежее", "Рядом с вами")
+    val tabList = listOf(
+        stringResource(R.string.recommendations),
+        stringResource(R.string.latest),
+        stringResource(R.string.nearby)
+    )
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabList.size })
     val coroutineScope = rememberCoroutineScope()
 
@@ -298,7 +304,7 @@ fun ProductListScreen(
                 contentPadding = PaddingValues(horizontal = 10.dp),
             ) {
                 Text(
-                    text = "Показать по",
+                    text = stringResource(R.string.show_by),
                     color = Color.Black,
                 )
             }

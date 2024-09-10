@@ -71,7 +71,7 @@ fun CategoryTilePreview() {
     FakeShopTheme {
         CategoryTile(
             categoryUI = CategoryUI(
-                title = "Авто",
+                title = "Auto",
                 originalName = "Auto",
             ),
             isSelected = true,

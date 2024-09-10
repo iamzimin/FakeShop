@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,7 +90,7 @@ fun ProductInfoScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     state = listState,
-                    horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),  // Промежутки и центрирование
+                    horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
                 ) {
                     itemsIndexed(productUI.imageURL) { _, image ->
                         Column(
@@ -212,7 +213,7 @@ fun ProductInfoScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = "Характеристики",
+                    text = stringResource(R.string.specifications),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
@@ -224,12 +225,12 @@ fun ProductInfoScreen(
                 productUI.productSpecifications.forEach { spec ->
                     Row {
                         val title = when (spec.key) {
-                            Spec.CATEGORY -> "Категория"
-                            Spec.CONDITION -> "Состояние"
-                            Spec.SIZE -> "Размер"
-                            Spec.FABRIC -> "Материал основной части"
-                            Spec.BRAND -> "Брэнд"
-                            Spec.COLOR -> "Цвет"
+                            Spec.CATEGORY -> stringResource(R.string.category)
+                            Spec.CONDITION -> stringResource(R.string.condition)
+                            Spec.SIZE -> stringResource(R.string.size)
+                            Spec.FABRIC -> stringResource(R.string.fabric)
+                            Spec.BRAND -> stringResource(R.string.brand)
+                            Spec.COLOR -> stringResource(R.string.color)
                         }
 
                         Text(
@@ -241,7 +242,7 @@ fun ProductInfoScreen(
                         Spacer(modifier = Modifier.width(5.dp))
 
                         Text(
-                            text = spec.value ?: "Нет информации",
+                            text = spec.value ?: stringResource(R.string.no_information),
                             style = MaterialTheme.typography.titleSmall,
                         )
                     }
@@ -250,7 +251,7 @@ fun ProductInfoScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = "Описание",
+                    text = stringResource(R.string.description),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
@@ -276,7 +277,7 @@ fun ProductInfoScreen(
                                 isDescriptionExpanded = !isDescriptionExpanded
                             },
                         style = MaterialTheme.typography.titleSmall,
-                        text = if (isDescriptionExpanded) "Скрыть" else "Читать далее",
+                        text = if (isDescriptionExpanded) stringResource(R.string.hide) else stringResource(R.string.read_more),
                         color = blue
                     )
                 }
@@ -304,7 +305,7 @@ fun ProductInfoScreen(
             ),
         ) {
             Text(
-                text = "Купить",
+                text = stringResource(R.string.buy),
                 color = Color.White,
             )
         }
@@ -320,15 +321,15 @@ fun ProductInfoScreenPreview() {
             productUI = ProductUI(
                 id = "",
                 imageURL = List(1) {""},
-                name = "Какой то товар",
-                description = "Мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель мебель",
-                price = "5 000 Р",
-                sale = "4 000 Р",
+                name = "Some kind of product",
+                description = "Furniture, furniture, furniture, furniture, furniture, furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture, Furniture",
+                price = "5 000 ₽",
+                sale = "4 000 ₽",
                 isHaveSale = true,
                 productSpecifications = listOf(
                     SpecificationUI(
                         key = Spec.CATEGORY,
-                        value = "Мебель"
+                        value = "Furniture"
                     ),
                     SpecificationUI(
                         key = Spec.CONDITION,

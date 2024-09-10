@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.LocalNavHostController
+import com.evg.resource.R
 import com.evg.registration.domain.model.RegistrationStatus
 import com.evg.registration.domain.model.User
 import com.evg.registration.presentation.viewmodel.RegistrationViewModel
@@ -74,12 +76,21 @@ fun RegistrationScreen(
         mutableStateOf(TextFieldValue("123123123")
     ) }
 
+    val successfulRegistration = stringResource(R.string.successful_registration)
+    val serverUnavailable = stringResource(R.string.server_unavailable)
+
+    val errorEmptyName = stringResource(R.string.error_empty_name)
+    val errorInvalidEmail = stringResource(R.string.error_invalid_email)
+    val errorPasswordMismatch = stringResource(R.string.error_password_mismatch)
+    val errorEmptyPassword = stringResource(R.string.error_empty_password)
+    val errorPasswordLength = stringResource(R.string.error_password_length)
+
     val registrationCallback: (RegistrationStatus) -> Unit = { registrationStatus ->
         if (registrationStatus.status == "success") {
-            Toast.makeText(context, "Успешная регистрация", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, successfulRegistration, Toast.LENGTH_SHORT).show()
             navController.navigate("login")
         } else if (registrationStatus.status == "fail") {
-            Toast.makeText(context, registrationStatus.message?: "Сервер недоступен", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, registrationStatus.message?: serverUnavailable, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -92,13 +103,13 @@ fun RegistrationScreen(
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 style = MaterialTheme.typography.titleLarge,
-                text = "Регистрация",
+                text = stringResource(R.string.registration),
             )
             Spacer(modifier = Modifier.height(70.dp))
 
             val spaceBetweenTextFields = 15.dp
             AuthenticationTextField(
-                placeholder = "Имя",
+                placeholder = stringResource(R.string.name),
                 value = nameText,
                 onValueChange = { newText ->
                     nameText = newText
@@ -107,7 +118,7 @@ fun RegistrationScreen(
             Spacer(modifier = Modifier.height(spaceBetweenTextFields))
 
             AuthenticationTextField(
-                placeholder = "Электронная почта",
+                placeholder = stringResource(R.string.email),
                 value = emailText,
                 onValueChange = { newText ->
                     emailText = newText
@@ -116,7 +127,7 @@ fun RegistrationScreen(
             Spacer(modifier = Modifier.height(spaceBetweenTextFields))
 
             AuthenticationTextField(
-                placeholder = "Пароль",
+                placeholder = stringResource(R.string.password),
                 value = passText,
                 onValueChange = { newText ->
                     passText = newText
@@ -126,7 +137,7 @@ fun RegistrationScreen(
             Spacer(modifier = Modifier.height(spaceBetweenTextFields))
 
             AuthenticationTextField(
-                placeholder = "Подтвердите пароль",
+                placeholder = stringResource(R.string.repeat_password),
                 value = pass2Text,
                 onValueChange = { newText ->
                     pass2Text = newText
@@ -148,7 +159,7 @@ fun RegistrationScreen(
                     }
                     .padding(horizontal = 5.dp),
                 style = MaterialTheme.typography.bodyMedium,
-                text = "Есть аккаунт? Войти",
+                text = stringResource(R.string.have_account_enter),
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -165,15 +176,15 @@ fun RegistrationScreen(
                 ),
                 onClick = {
                     if (nameText.text.isEmpty()) {
-                        Toast.makeText(context, "Имя не может быть пустым", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorEmptyName, Toast.LENGTH_SHORT).show()
                     } else if (!Patterns.EMAIL_ADDRESS.matcher(emailText.text).matches()) {
-                        Toast.makeText(context, "Неверно указан email", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorInvalidEmail, Toast.LENGTH_SHORT).show()
                     } else if (passText.text != pass2Text.text) {
-                        Toast.makeText(context, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorPasswordMismatch, Toast.LENGTH_SHORT).show()
                     } else if (passText.text.isEmpty() || pass2Text.text.isEmpty()) {
-                        Toast.makeText(context, "Пароль не может быть пустым", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorEmptyPassword, Toast.LENGTH_SHORT).show()
                     } else if (passText.text.length >= 24 || pass2Text.text.length >= 24) {
-                        Toast.makeText(context, "Максимальная длинна пароля - 24 символа", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorPasswordLength, Toast.LENGTH_SHORT).show()
                     } else {
                         registrationUser(
                             User(
@@ -187,18 +198,18 @@ fun RegistrationScreen(
                     }
                 }
             ) {
-                Text(text = "Войти")
+                Text(text = stringResource(R.string.enter))
             }
             Spacer(modifier = Modifier.height(50.dp))
         }
 
         val profileIndex = 4
         val items = listOf(
-            "Поиск" to Icons.Default.Search,
-            "Избранное" to Icons.Default.Favorite,
-            "Объявления" to Icons.AutoMirrored.Filled.List,
-            "Сообщения" to Icons.Default.Call,
-            "Профиль" to Icons.Default.Person
+            stringResource(R.string.search) to Icons.Default.Search,
+            stringResource(R.string.favorites) to Icons.Default.Favorite,
+            stringResource(R.string.ads) to Icons.AutoMirrored.Filled.List,
+            stringResource(R.string.messages) to Icons.Default.Call,
+            stringResource(R.string.profile) to Icons.Default.Person
         )
 
         NavigationBar(
