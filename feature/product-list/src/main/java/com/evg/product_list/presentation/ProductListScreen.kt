@@ -60,10 +60,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.SortType
+import com.evg.product_list.domain.model.Specification
 import com.evg.product_list.presentation.mapper.toProductUI
 import com.evg.product_list.presentation.model.CategoryUI
 import com.evg.product_list.presentation.model.ProductUI
@@ -76,14 +80,20 @@ import com.evg.ui.theme.lightButtonBackground
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductListScreen(
-    viewModel: ProductListViewModel = hiltViewModel<ProductListViewModel>(),
+    products: LazyPagingItems<Product>,
+    sortType: () -> SortType,
+    setSortType: (SortType) -> Unit,
+    setCategoryFilter: (String?) -> Unit,
+    updateProducts: () -> Unit,
+    setCategoryPageSize: (Int) -> Unit,
 ) {
-    val products = viewModel.products.collectAsLazyPagingItems()
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
     var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
 
@@ -108,17 +118,17 @@ fun ProductListScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var isShowDialog by remember { mutableStateOf(false) }
-    var currentOption by remember { mutableStateOf(viewModel.getSortType()) }
+    var currentOption by remember { mutableStateOf(sortType()) }
 
     if (isShowDialog) {
         SortTypeDialog(
             hideDialog = { isShowDialog = false },
-            currentOption = viewModel.getSortType(),
+            currentOption = sortType(),
             selectedOption = {
                 currentOption = it
             },
             onConfirm = {
-                viewModel.setSortType(currentOption)
+                setSortType(currentOption)
                 isShowDialog = false
             },
         )
@@ -139,7 +149,7 @@ fun ProductListScreen(
                     categoryUI = firstCategoryRow[index],
                     isSelected = selectedTile == firstCategoryRow[index].originalName,
                     onTileClick = { selectedCategory ->
-                        viewModel.setCategoryFilter(category = selectedCategory)
+                        setCategoryFilter(selectedCategory)
                         selectedTile = selectedCategory
                     }
                 )
@@ -158,7 +168,7 @@ fun ProductListScreen(
                     categoryUI = secondCategoryRow[index],
                     isSelected = selectedTile == secondCategoryRow[index].originalName,
                     onTileClick = { selectedCategory ->
-                        viewModel.setCategoryFilter(category = selectedCategory)
+                        setCategoryFilter(selectedCategory)
                         selectedTile = selectedCategory
                     }
                 )
@@ -232,7 +242,7 @@ fun ProductListScreen(
                 is LoadState.NotLoading -> {
                     SwipeRefresh(
                         state = refreshingState,
-                        onRefresh = { viewModel.updateProducts() },
+                        onRefresh = { updateProducts() },
                         indicator = { state, trigger ->
                             SwipeRefreshIndicator(
                                 state = state,
@@ -305,7 +315,7 @@ fun ProductListScreen(
                     disabledContentColor = Color.Unspecified,
                 ),
                 onClick = {
-                    viewModel.setCategoryPageSize(pageSize = 10)
+                    setCategoryPageSize(10)
                 },
                 contentPadding = PaddingValues(0.dp),
             ) {
@@ -327,7 +337,7 @@ fun ProductListScreen(
                     disabledContentColor = Color.Unspecified,
                 ),
                 onClick = {
-                    viewModel.setCategoryPageSize(pageSize = 20)
+                    setCategoryPageSize(20)
                 },
                 contentPadding = PaddingValues(0.dp),
             ) {
@@ -349,7 +359,7 @@ fun ProductListScreen(
                     disabledContentColor = Color.Unspecified,
                 ),
                 onClick = {
-                    viewModel.setCategoryPageSize(pageSize = 30)
+                    setCategoryPageSize(30)
                 },
                 contentPadding = PaddingValues(0.dp),
             ) {
@@ -359,8 +369,6 @@ fun ProductListScreen(
                 )
             }
         }
-
-
     }
 }
 
@@ -369,6 +377,30 @@ fun ProductListScreen(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun ProductListScreenPreview() {
     FakeShopTheme {
-        ProductListScreen()
+        val products = List(10) {
+            Product(
+                id = "1",
+                name = "Product 1",
+                category = listOf("Category 1"),
+                price = 1000,
+                discountedPrice = 900,
+                images = listOf("1.jpg", "2.jpg"),
+                productRating = 4.5,
+                brand = "Brand 1",
+                productSpecifications = listOf(
+                    Specification(key = "Color", value = "Red"),
+                    Specification(key = "Size", value = "M")
+                )
+            )
+        }
+
+        ProductListScreen(
+            products = flowOf(PagingData.from(products)).collectAsLazyPagingItems(),
+            sortType = { SortType.DEFAULT },
+            setSortType = {},
+            setCategoryFilter = {},
+            updateProducts = {},
+            setCategoryPageSize = {},
+        )
     }
 }

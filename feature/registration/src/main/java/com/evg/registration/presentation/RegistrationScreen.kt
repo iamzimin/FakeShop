@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.LocalNavHostController
 import com.evg.registration.domain.model.RegistrationStatus
@@ -55,10 +56,10 @@ import com.evg.ui.theme.lightTextFieldBackground
 
 @Composable
 fun RegistrationScreen(
-    viewModel: RegistrationViewModel = hiltViewModel<RegistrationViewModel>(),
+    navController: NavHostController,
+    registrationUser: (user: User, callback: (RegistrationStatus) -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
-    val navController = LocalNavHostController.current
 
     var nameText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue("nameee")
@@ -174,14 +175,14 @@ fun RegistrationScreen(
                     } else if (passText.text.length >= 24 || pass2Text.text.length >= 24) {
                         Toast.makeText(context, "Максимальная длинна пароля - 24 символа", Toast.LENGTH_SHORT).show()
                     } else {
-                        viewModel.registrationUser(
-                            user = User(
-                                    name = nameText.text,
-                                    email = emailText.text,
-                                    password = passText.text,
-                                    cpassword = pass2Text.text,
-                                ),
-                            callback = registrationCallback,
+                        registrationUser(
+                            User(
+                                name = nameText.text,
+                                email = emailText.text,
+                                password = passText.text,
+                                cpassword = pass2Text.text,
+                            ),
+                            registrationCallback,
                         )
                     }
                 }
@@ -244,6 +245,9 @@ fun RegistrationScreen(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun RegistrationScreenPreview() {
     FakeShopTheme {
-        RegistrationScreen()
+        RegistrationScreen(
+            navController = NavHostController(LocalContext.current),
+            registrationUser = { user, callback -> }
+        )
     }
 }

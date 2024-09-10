@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.LocalNavHostController
 import com.evg.login.domain.model.LoginStatus
@@ -56,10 +57,10 @@ import com.evg.ui.theme.lightTextFieldBackground
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel<LoginViewModel>(),
+    navController: NavHostController,
+    loginUser: (user: User, callback: (LoginStatus) -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
-    val navController = LocalNavHostController.current
 
     var emailText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
@@ -148,12 +149,12 @@ fun LoginScreen(
                     if (!Patterns.EMAIL_ADDRESS.matcher(emailText.text).matches()) {
                         Toast.makeText(context, "Неверно указан email", Toast.LENGTH_SHORT).show()
                     } else {
-                        viewModel.loginUser(
-                            user = User(
+                        loginUser(
+                            User(
                                 email = emailText.text,
                                 password = passText.text,
                             ),
-                            callback = loginCallback,
+                            loginCallback,
                         )
                     }
                 }
@@ -216,6 +217,9 @@ fun LoginScreen(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun LoginScreenPreview() {
     FakeShopTheme {
-        LoginScreen()
+        LoginScreen(
+            navController = NavHostController(LocalContext.current),
+            loginUser = { user, callback -> }
+        )
     }
 }

@@ -13,14 +13,14 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCases: LoginUseCases,
 ): ViewModel() {
-    fun loginUser(user: User, callback: (LoginStatus) -> Unit) {
+    fun loginUser(user: User, loginCallback: (LoginStatus) -> Unit) {
         viewModelScope.launch {
             loginUseCases.loginUseCase.invoke(user = user)
                 .collect { response ->
                     if (response.status == "success") {
                         response.token?.let { loginUseCases.saveUserTokenUseCase.invoke(token = it) }
                     }
-                    callback(response)
+                    loginCallback(response)
                 }
         }
     }

@@ -18,9 +18,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.evg.LocalNavHostController
+import com.evg.login.presentation.LoginRoot
 import com.evg.login.presentation.LoginScreen
 import com.evg.product_info.presentation.ProductInfoRoot
+import com.evg.product_list.presentation.ProductListRoot
 import com.evg.product_list.presentation.ProductListScreen
+import com.evg.registration.presentation.RegistrationRoot
 import com.evg.registration.presentation.RegistrationScreen
 import com.evg.shared_prefs.data.repository.SharedPrefsRepositoryImpl
 import com.evg.ui.theme.FakeShopTheme
@@ -52,17 +55,17 @@ fun MainScreen() {
                     composable(
                         route = "registration"
                     ) {
-                        RegistrationScreen()
+                        RegistrationRoot()
                     }
 
                     composable( route = "login") {
-                        LoginScreen()
+                        LoginRoot()
                     }
 
                     composable(
                         route = "product_list"
                     ) {
-                        ProductListScreen()
+                        ProductListRoot()
                     }
 
                     composable(
