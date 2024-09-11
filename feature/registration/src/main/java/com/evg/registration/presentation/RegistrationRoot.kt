@@ -13,10 +13,10 @@ fun RegistrationRoot(
 
     RegistrationScreen(
         navController = navController,
-        registrationUser = { user, callback ->
+        registrationUser = { user, registrationCallback ->
             viewModel.registrationUser(
                 user = user,
-                registrationCallback = callback
+                registrationCallback = registrationCallback
             )
         }
     )

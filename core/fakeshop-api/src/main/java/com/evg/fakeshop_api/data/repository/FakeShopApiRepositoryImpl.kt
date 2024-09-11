@@ -4,6 +4,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.evg.database.domain.repository.DatabaseRepository
+import com.evg.fakeshop_api.domain.LoginError
+import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.fakeshop_api.domain.RegistrationError
+import com.evg.fakeshop_api.domain.Result
 import com.evg.fakeshop_api.domain.mapper.toProductDBO
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
@@ -16,8 +20,13 @@ import com.evg.fakeshop_api.domain.models.RegistrationResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.fakeshop_api.domain.service.FakeShopApi
 import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
+import retrofit2.Response
 import retrofit2.Retrofit
+import java.net.SocketTimeoutException
 
 class FakeShopApiRepositoryImpl(
     private val context: Context,
@@ -26,54 +35,62 @@ class FakeShopApiRepositoryImpl(
 ): FakeShopApiRepository {
     private val fakeShopApi = fakeShopRetrofit.create(FakeShopApi::class.java)
 
-    override suspend fun registrationUser(registrationBody: RegistrationBody): RegistrationResponse? {
+    override suspend fun registrationUser(
+        registrationBody: RegistrationBody
+    ): Result<RegistrationResponse, RegistrationError> {
         return try {
             val user = fakeShopApi.registrationUser(
                 registrationBody = registrationBody
             )
 
-            return user
+            return Result.Success(user)
+        } catch (e: JsonParseException) {
+            Result.Error(RegistrationError.SERIALIZATION)
         } catch (e: HttpException) {
-            val errorBody = e.response()?.errorBody()?.string()
-            val registrationResponse: RegistrationResponse? = try {
-                Gson().fromJson(errorBody, RegistrationResponse::class.java)
-            } catch (e: Exception) {
-                println(e)
-                null
+            when(e.code()) {
+                408 -> Result.Error(RegistrationError.REQUEST_TIMEOUT)
+                409 -> Result.Error(RegistrationError.EMAIL_EXIST)
+                429 -> Result.Error(RegistrationError.TOO_MANY_REQUESTS)
+                in 500..599 -> Result.Error(RegistrationError.SERVER_ERROR)
+                else -> Result.Error(RegistrationError.UNKNOWN)
             }
-            registrationResponse
+        } catch (e: SocketTimeoutException) {
+            Result.Error(RegistrationError.REQUEST_TIMEOUT)
         } catch (e: Exception) {
-            println(e)
-            null
+            Result.Error(RegistrationError.UNKNOWN)
         }
     }
 
-    override suspend fun loginUser(loginBody: LoginBody): LoginResponse? {
+    override suspend fun loginUser(
+        loginBody: LoginBody
+    ): Result<LoginResponse, LoginError> {
         return try {
             val user = fakeShopApi.loginUser(
                 loginBody = loginBody
             )
 
-            return user
+            return Result.Success(user)
+        } catch (e: JsonParseException) {
+            Result.Error(LoginError.SERIALIZATION)
         } catch (e: HttpException) {
-            val errorBody = e.response()?.errorBody()?.string()
-            val loginResponse: LoginResponse? = try {
-                Gson().fromJson(errorBody, LoginResponse::class.java)
-            } catch (e: Exception) {
-                println(e)
-                null
-            }
-            loginResponse
+            when(e.code()) {
+                401 -> Result.Error(LoginError.USER_NOT_FOUND)
+                408 -> Result.Error(LoginError.REQUEST_TIMEOUT)
+                429 -> Result.Error(LoginError.TOO_MANY_REQUESTS)
+                in 500..599 -> Result.Error(LoginError.SERVER_ERROR)
+                else -> Result.Error(LoginError.UNKNOWN)
+            } //TODO
+        } catch (e: SocketTimeoutException) {
+            Result.Error(LoginError.REQUEST_TIMEOUT)
         } catch (e: Exception) {
-            println(e)
-            null
+            Result.Error(LoginError.UNKNOWN)
         }
     }
 
     override suspend fun getAllProductsListByPage(
         page: Int,
         filter: ProductFilterDTO
-    ): ProductListPageResponse<ProductResponse>? {
+    ): Result<ProductListPageResponse<ProductResponse>, NetworkError> {
         return try {
             val response = fakeShopApi.getProductsList(
                 page = page,
@@ -82,37 +99,63 @@ class FakeShopApiRepositoryImpl(
                 sort = filter.sort.value,
             )
 
-            response?.productsList?.map { it.toProductDBO() }?.let {
+            //throw HttpException(Response.error<Any>(408, "Conflict error".toResponseBody(null)))
+
+            response.productsList?.map { it.toProductDBO() }?.let {
                 databaseRepository.insertProducts(
                     products = it
                 )
             }
 
-            return response
+            return Result.Success(response)
+        } catch (e: JsonParseException) {
+            Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: HttpException) {
+            when(e.code()) {
+                408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+                429 -> Result.Error(NetworkError.TOO_MANY_REQUESTS)
+                in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+                else -> Result.Error(NetworkError.UNKNOWN)
+            }
+        } catch (e: SocketTimeoutException) {
+            Result.Error(NetworkError.REQUEST_TIMEOUT)
         } catch (e: Exception) {
-            println(e.message) //TODO  retrofit2.HttpException: HTTP 521 Response{protocol=h2, code=521, message=, url=https://fakeshopapi-l2ng.onrender.com/app/v1/products?page=1&limit=10}
-            null // java.net.SocketTimeoutException: timeout
+            Result.Error(NetworkError.UNKNOWN)
         }
     }
 
-    override suspend fun getProductById(id: String): ProductInfoResponse<ProductResponse>? {
+    override suspend fun getProductById(
+        id: String
+    ): Result<ProductInfoResponse<ProductResponse>, NetworkError> {
         return try {
             val response = fakeShopApi.getProductById(
                 id = id
             )
 
-            response?.product?.toProductDBO()?.let {
+            response.product?.toProductDBO()?.let {
                 databaseRepository.insertProduct(
                     product = it
                 )
             }
 
-            return response
+            return Result.Success(response)
+        } catch (e: JsonParseException) {
+            Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: HttpException) {
+            when(e.code()) {
+                408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+                429 -> Result.Error(NetworkError.TOO_MANY_REQUESTS)
+                in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+                else -> Result.Error(NetworkError.UNKNOWN)
+            }
+        } catch (e: SocketTimeoutException) {
+            Result.Error(NetworkError.REQUEST_TIMEOUT)
         } catch (e: Exception) {
-            println(e.message) //TODO  retrofit2.HttpException: HTTP 521 Response{protocol=h2, code=521, message=, url=https://fakeshopapi-l2ng.onrender.com/app/v1/products?page=1&limit=10}
-            null // java.net.SocketTimeoutException: timeout
+            Result.Error(NetworkError.UNKNOWN)
         }
     }
+
+
 
     override fun isInternetAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

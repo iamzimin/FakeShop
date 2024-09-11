@@ -16,7 +16,6 @@ fun User.toRegistrationBody(): RegistrationBody {
 
 fun RegistrationResponse?.toRegistrationStatus(): RegistrationStatus {
     return RegistrationStatus(
-        status = this?.status?: "fail",
-        message = this?.message,
+        status = this?.status,
     )
 }

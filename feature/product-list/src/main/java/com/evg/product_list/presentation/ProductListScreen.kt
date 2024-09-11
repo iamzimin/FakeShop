@@ -3,9 +3,6 @@ package com.evg.product_list.presentation
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,30 +10,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -50,7 +39,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -58,44 +46,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
+import com.evg.fakeshop_api.domain.NetworkError
 import com.evg.resource.R
 import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.model.Specification
 import com.evg.product_list.presentation.mapper.toProductUI
 import com.evg.product_list.presentation.model.CategoryUI
-import com.evg.product_list.presentation.model.ProductUI
-import com.evg.product_list.presentation.viewmodel.ProductListViewModel
+import com.evg.product_list.presentation.model.ProductState
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.HorizontalPadding
-import com.evg.ui.theme.blue
 import com.evg.ui.theme.lightButtonBackground
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductListScreen(
-    products: LazyPagingItems<Product>,
+    products: LazyPagingItems<ProductState>,
     sortType: () -> SortType,
     setSortType: (SortType) -> Unit,
     setCategoryFilter: (String?) -> Unit,
-    updateProducts: () -> Unit,
     setCategoryPageSize: (Int) -> Unit,
+    updateProducts: () -> Unit,
 ) {
+    val context = LocalContext.current
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
     var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
 
@@ -120,6 +103,7 @@ fun ProductListScreen(
         stringResource(R.string.latest),
         stringResource(R.string.nearby)
     )
+
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabList.size })
     val coroutineScope = rememberCoroutineScope()
 
@@ -240,13 +224,15 @@ fun ProductListScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Products loading error. Swipe to refresh",
+                            text = stringResource(R.string.products_loading_error),
                             textAlign = TextAlign.Center,
                         )
                     }
                 }
                 is LoadState.NotLoading -> {
                     SwipeRefresh(
+                        modifier = Modifier
+                            .fillMaxSize(),
                         state = refreshingState,
                         onRefresh = { updateProducts() },
                         indicator = { state, trigger ->
@@ -268,16 +254,31 @@ fun ProductListScreen(
                         ) {
                             items(
                                 count = products.itemCount,
-                                key = products.itemKey { it.id },
                             ) { index ->
                                 val item = products[index]
                                 if (item != null) {
-                                    ProductTile(
-                                        productUI = item.toProductUI()
-                                    )
+                                    when (item) {
+                                        is ProductState.Success -> {
+                                            ProductTile(
+                                                productUI = item.product.toProductUI()
+                                            )
+                                        }
+                                        is ProductState.Error -> {
+                                            val errorMessage = when (item.error) {
+                                                NetworkError.REQUEST_TIMEOUT -> stringResource(R.string.request_timeout)
+                                                NetworkError.TOO_MANY_REQUESTS -> stringResource(R.string.too_many_requests)
+                                                NetworkError.SERVER_ERROR -> stringResource(R.string.server_error)
+                                                NetworkError.SERIALIZATION -> stringResource(R.string.serialization_error)
+                                                NetworkError.UNKNOWN -> stringResource(R.string.unknown_error)
+                                            }
+
+                                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -401,7 +402,7 @@ fun ProductListScreenPreview() {
         }
 
         ProductListScreen(
-            products = flowOf(PagingData.from(products)).collectAsLazyPagingItems(),
+            products = flowOf(PagingData.from(emptyList<ProductState>())).collectAsLazyPagingItems(),
             sortType = { SortType.DEFAULT },
             setSortType = {},
             setCategoryFilter = {},

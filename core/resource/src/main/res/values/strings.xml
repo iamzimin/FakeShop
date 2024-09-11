@@ -19,6 +19,7 @@
     <string name="repeat_password">Repeat password</string>
     <string name="have_account_enter">Do you have an account? Enter</string>
     <string name="no_account_register">No account? Register</string>
+    <string name="products_loading_error">Products loading error. Swipe to refresh</string>
 
     <string name="error_empty_name">Name cannot be empty</string>
     <string name="error_invalid_email">Invalid email address</string>
@@ -62,5 +63,16 @@
     <string name="furniture">Furniture</string>
     <string name="hardware">Hardware</string>
     <string name="lamp">Lamp</string>
+
+    <string name="request_timeout">Request Timeout</string>
+    <string name="too_many_requests">Too Many Requests</string>
+    <string name="server_error">Server Error</string>
+    <string name="serialization_error">Serialization Error</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="email_exists">Email exists</string>
+    <string name="password_mismatch">Password mismatch</string>
+    <string name="user_not_found">User not found</string>
+
+
 
 </resources>

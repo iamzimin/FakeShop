@@ -6,6 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.evg.database.data.ProductsPageSourceLocal
 import com.evg.fakeshop_api.data.ProductsListPageSourceRemote
+import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.fakeshop_api.domain.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.product_list.domain.mapper.toProduct
 import com.evg.product_list.domain.mapper.toProductFilterDB
@@ -14,6 +16,7 @@ import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.repository.ProductListRepository
 import com.evg.product_list.domain.model.ProductFilter
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class ProductListRepositoryImpl(
@@ -21,26 +24,41 @@ class ProductListRepositoryImpl(
     private val productsListPageSourceRemote: ProductsListPageSourceRemote,
     private val productsPageSourceLocal: ProductsPageSourceLocal,
 ): ProductListRepository {
-    override suspend fun getAllProductsList(filter: ProductFilter): Flow<PagingData<Product>> {
-        if (fakeShopApi.isInternetAvailable()) {
-            return Pager(
+    override suspend fun getAllProductsList(filter: ProductFilter): Flow<PagingData<Result<Product, NetworkError>>> {
+        return if (fakeShopApi.isInternetAvailable()) {
+            Pager(
                 PagingConfig(
-                pageSize = filter.pageSize,
-            )) { productsListPageSourceRemote.apply { this.filter = filter.toProductFilterDTO() } }.flow.map { pagingData ->
-                pagingData.map {
-                    it.toProduct()
+                    pageSize = filter.pageSize,
+                )) { productsListPageSourceRemote.apply { this.filter = filter.toProductFilterDTO() } }
+                .flow
+                .map { pagingData ->
+                    pagingData.map { productResponse ->
+                        when (productResponse) {
+                            is Result.Error -> {
+                                Result.Error(productResponse.error)
+                            }
+                            is Result.Success -> {
+                                Result.Success(productResponse.data.toProduct())
+                            }
+                        }
+                    }
                 }
-            }
         } else {
-            return Pager(
+            Pager(
                 PagingConfig(
                     pageSize = filter.pageSize,
                     initialLoadSize = filter.pageSize,
-                )) { productsPageSourceLocal.apply { this.filter = filter.toProductFilterDB() } }.flow.map { pagingData ->
-                pagingData.map {
-                    it.toProduct()
+                )) { productsPageSourceLocal.apply { this.filter = filter.toProductFilterDB() } }
+                .flow
+                .map { pagingData ->
+                    pagingData.map { productDB ->
+                        try {
+                            Result.Success(productDB.toProduct())
+                        } catch (e: Exception) {
+                            Result.Error(NetworkError.UNKNOWN)
+                        } //TODO
+                    }
                 }
-            }
         }
     }
 }

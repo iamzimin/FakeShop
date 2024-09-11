@@ -2,6 +2,8 @@ package com.evg.product_info.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.fakeshop_api.domain.Result
 import com.evg.product_info.domain.model.Product
 import com.evg.product_info.domain.usecase.ProductInfoUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,16 +19,23 @@ class ProductInfoViewModel @Inject constructor(
     private val _productInfo = MutableStateFlow<Product?>(null)
     val productInfo: StateFlow<Product?> get() = _productInfo
 
-    private val _isInfoLoading = MutableStateFlow(true)
-    val isInfoLoading: StateFlow<Boolean> = _isInfoLoading
+    private val _isProductLoading = MutableStateFlow(true)
+    val isProductLoading: StateFlow<Boolean> = _isProductLoading
 
-    fun getProductInfo(id: String) {
+    fun getProductInfo(id: String, productCallback: (NetworkError) -> Unit) {
         viewModelScope.launch {
-            _isInfoLoading.value = true
+            _isProductLoading.value = true
             productInfoUseCases.getProductById.invoke(id = id)
                 .collect { product ->
-                    _productInfo.value = product
-                    _isInfoLoading.value = false
+                    when(product) {
+                        is Result.Error -> {
+                            productCallback(product.error)
+                        }
+                        is Result.Success -> {
+                            _productInfo.value = product.data
+                        }
+                    }
+                    _isProductLoading.value = false
                 }
         }
     }

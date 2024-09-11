@@ -1,6 +1,7 @@
 package com.evg.product_info.presentation
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -41,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.evg.fakeshop_api.domain.NetworkError
 import com.evg.product_info.presentation.model.ProductUI
 import com.evg.product_info.presentation.model.Spec
 import com.evg.product_info.presentation.model.SpecificationUI
@@ -65,10 +69,41 @@ import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun ProductInfoScreen(
+    productId: String,
     productUI: ProductUI?,
+    getProductInfo: (id: String, productCallback: (NetworkError) -> Unit) -> Unit,
+    isProductLoading: Boolean,
 ) {
+    val context = LocalContext.current
+
+    var isInitialized by rememberSaveable { mutableStateOf(false) }
+
     var isDescriptionExpanded by remember { mutableStateOf(false) }
     var isDescriptionOverflowing by remember { mutableStateOf(false) }
+
+    val errorRequestTimeout = stringResource(R.string.request_timeout)
+    val errorTooManyRequests = stringResource(R.string.too_many_requests)
+    val errorServerError = stringResource(R.string.server_error)
+    val errorSerialization = stringResource(R.string.serialization_error)
+    val errorUnknown = stringResource(R.string.unknown_error)
+
+    if (!isInitialized) {
+        LaunchedEffect(productId) {
+            getProductInfo(
+                productId
+            ) { error ->
+                val errorType = when (error) {
+                    NetworkError.REQUEST_TIMEOUT -> errorRequestTimeout
+                    NetworkError.TOO_MANY_REQUESTS -> errorTooManyRequests
+                    NetworkError.SERVER_ERROR -> errorServerError
+                    NetworkError.SERIALIZATION -> errorSerialization
+                    NetworkError.UNKNOWN -> errorUnknown
+                }
+                Toast.makeText(context, errorType, Toast.LENGTH_SHORT).show()
+            }
+            isInitialized = true
+        }
+    }
 
     val listState = rememberLazyListState()
     var visibleIndex by remember { mutableIntStateOf(0) }
@@ -318,6 +353,9 @@ fun ProductInfoScreen(
 fun ProductInfoScreenPreview() {
     FakeShopTheme {
         ProductInfoScreen(
+            productId = "null",
+            isProductLoading = false,
+            getProductInfo = { _, _ -> },
             productUI = ProductUI(
                 id = "",
                 imageURL = List(1) {""},

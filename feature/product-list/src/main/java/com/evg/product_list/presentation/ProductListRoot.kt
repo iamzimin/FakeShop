@@ -24,6 +24,9 @@ fun ProductListRoot(
                 category = category
             )
         },
+        /*updateProducts = { updateCallback ->
+            viewModel.updateProducts(updateCallback)
+        },*/
         updateProducts = { viewModel.updateProducts() },
         setCategoryPageSize = { pageSize ->
             viewModel.setCategoryPageSize(

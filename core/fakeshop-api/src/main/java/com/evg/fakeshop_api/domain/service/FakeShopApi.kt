@@ -19,12 +19,12 @@ interface FakeShopApi {
     @POST("app/v1/users")
     suspend fun registrationUser(
         @Body registrationBody: RegistrationBody
-    ): RegistrationResponse?
+    ): RegistrationResponse
 
     @POST("app/v1/users/auth/login")
     suspend fun loginUser(
         @Body loginBody: LoginBody
-    ): LoginResponse?
+    ): LoginResponse
 
     @GET("app/v1/products")
     suspend fun getProductsList(
@@ -32,10 +32,10 @@ interface FakeShopApi {
         @Query("limit") pageSize: Int?, //TODO
         @Query("category") category: String?,
         @Query("sort") sort: String?,
-    ): ProductListPageResponse<ProductResponse>?
+    ): ProductListPageResponse<ProductResponse>
 
     @GET("app/v1/products/{id}")
     suspend fun getProductById(
         @Path("id") id: String
-    ): ProductInfoResponse<ProductResponse>?
+    ): ProductInfoResponse<ProductResponse>
 }

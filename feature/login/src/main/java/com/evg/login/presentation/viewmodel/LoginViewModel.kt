@@ -2,6 +2,8 @@ package com.evg.login.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.evg.fakeshop_api.domain.Result
+import com.evg.login.domain.model.LoginState
 import com.evg.login.domain.model.LoginStatus
 import com.evg.login.domain.model.User
 import com.evg.login.domain.usecase.LoginUseCases
@@ -13,14 +15,19 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCases: LoginUseCases,
 ): ViewModel() {
-    fun loginUser(user: User, loginCallback: (LoginStatus) -> Unit) {
+    fun loginUser(user: User, loginCallback: (LoginState) -> Unit) {
         viewModelScope.launch {
             loginUseCases.loginUseCase.invoke(user = user)
                 .collect { response ->
-                    if (response.status == "success") {
-                        response.token?.let { loginUseCases.saveUserTokenUseCase.invoke(token = it) }
+                    when(response) {
+                        is Result.Error -> {
+                            loginCallback(LoginState.Error(error = response.error))
+                        }
+                        is Result.Success -> {
+                            response.data.token?.let { loginUseCases.saveUserTokenUseCase.invoke(token = it) }
+                            loginCallback(LoginState.Success)
+                        }
                     }
-                    loginCallback(response)
                 }
         }
     }

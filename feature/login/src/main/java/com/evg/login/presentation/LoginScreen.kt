@@ -45,6 +45,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.LocalNavHostController
+import com.evg.fakeshop_api.domain.LoginError
+import com.evg.fakeshop_api.domain.RegistrationError
+import com.evg.login.domain.model.LoginState
 import com.evg.login.domain.model.LoginStatus
 import com.evg.login.domain.model.User
 import com.evg.login.presentation.viewmodel.LoginViewModel
@@ -60,7 +63,7 @@ import com.evg.ui.theme.lightTextFieldBackground
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    loginUser: (user: User, callback: (LoginStatus) -> Unit) -> Unit,
+    loginUser: (user: User, callback: (LoginState) -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -78,16 +81,34 @@ fun LoginScreen(
 
     val errorInvalidEmail = stringResource(R.string.error_invalid_email)
 
-    val loginCallback: (LoginStatus) -> Unit = { loginStatus ->
-        if (loginStatus.status == "success") {
-            Toast.makeText(context, "$loggedAccount ${loginStatus.token}", Toast.LENGTH_SHORT).show()
-            navController.navigate("product_list") {
-                popUpTo("login") {
-                    inclusive = true
+    val errorRequestTimeout = stringResource(R.string.request_timeout)
+    val errorTooManyRequests = stringResource(R.string.too_many_requests)
+    val errorServerError = stringResource(R.string.server_error)
+    val errorSerialization = stringResource(R.string.serialization_error)
+    val errorUnknown = stringResource(R.string.unknown_error)
+    val errorUserNotFound = stringResource(R.string.user_not_found)
+
+    val loginCallback: (LoginState) -> Unit = { loginState ->
+        when (loginState) {
+            is LoginState.Error -> {
+                val errorMessage = when (loginState.error) {
+                    LoginError.REQUEST_TIMEOUT -> errorRequestTimeout
+                    LoginError.TOO_MANY_REQUESTS -> errorTooManyRequests
+                    LoginError.SERVER_ERROR -> errorServerError
+                    LoginError.SERIALIZATION -> errorSerialization
+                    LoginError.UNKNOWN -> errorUnknown
+                    LoginError.USER_NOT_FOUND -> errorUserNotFound
                 }
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
             }
-        } else if (loginStatus.status == "fail") {
-            Toast.makeText(context, loginStatus.message?: serverUnavailable, Toast.LENGTH_SHORT).show()
+            LoginState.Success -> {
+                navController.navigate("product_list") {
+                    popUpTo("login") {
+                        inclusive = true
+                    }
+                }
+                Toast.makeText(context, loggedAccount, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

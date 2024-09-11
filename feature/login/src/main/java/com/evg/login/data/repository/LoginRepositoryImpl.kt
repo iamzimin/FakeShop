@@ -1,5 +1,8 @@
 package com.evg.login.data.repository
 
+import com.evg.fakeshop_api.domain.LoginError
+import com.evg.fakeshop_api.domain.RegistrationError
+import com.evg.fakeshop_api.domain.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.login.domain.mapper.toLoginBody
 import com.evg.login.domain.mapper.toLoginStatus
@@ -14,9 +17,14 @@ class LoginRepositoryImpl(
     private val fakeShopApiRepository: FakeShopApiRepository,
     private val sharedPrefsRepository: SharedPrefsRepository,
 ): LoginRepository {
-    override suspend fun loginUser(user: User): Flow<LoginStatus> {
+    override suspend fun loginUser(user: User): Flow<Result<LoginStatus, LoginError>> {
         return flow {
-            emit(fakeShopApiRepository.loginUser(loginBody = user.toLoginBody()).toLoginStatus())
+            val logUser = fakeShopApiRepository.loginUser(loginBody = user.toLoginBody())
+            val result = when (logUser) {
+                is Result.Error -> Result.Error<LoginStatus, LoginError>(logUser.error)
+                is Result.Success -> Result.Success(logUser.data.toLoginStatus())
+            }
+            emit(result)
         }
     }
 

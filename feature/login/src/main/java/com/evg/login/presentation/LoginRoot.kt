@@ -13,10 +13,10 @@ fun LoginRoot(
 
     LoginScreen(
         navController = navController,
-        loginUser = { user, callback ->
+        loginUser = { user, loginCallback ->
             viewModel.loginUser(
                 user = user,
-                loginCallback = callback
+                loginCallback = loginCallback
             )
         }
     )

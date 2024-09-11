@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.evg.fakeshop_api.domain.NetworkError
 import com.evg.product_info.presentation.viewmodel.ProductInfoViewModel
 
 @Composable
@@ -15,18 +16,18 @@ fun ProductInfoRoot(
     productId: String,
     viewModel: ProductInfoViewModel = hiltViewModel<ProductInfoViewModel>(),
 ) {
-    var isInitialized by rememberSaveable { mutableStateOf(false) }
-
     val productInfo by viewModel.productInfo.collectAsState()
-
-    if (!isInitialized) {
-        LaunchedEffect(productId) {
-            viewModel.getProductInfo(productId)
-            isInitialized = true
-        }
-    }
+    val isProductLoading by viewModel.isProductLoading.collectAsState()
 
     ProductInfoScreen(
+        productId = productId,
         productUI = productInfo?.toProductUI(),
+        isProductLoading = isProductLoading,
+        getProductInfo = { id, productCallback ->
+            viewModel.getProductInfo(
+                id = id,
+                productCallback = productCallback,
+            )
+        }
     )
 }

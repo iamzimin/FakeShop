@@ -45,8 +45,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.LocalNavHostController
-import com.evg.resource.R
+import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.fakeshop_api.domain.RegistrationError
+import com.evg.registration.domain.model.RegistrationState
 import com.evg.registration.domain.model.RegistrationStatus
+import com.evg.resource.R
 import com.evg.registration.domain.model.User
 import com.evg.registration.presentation.viewmodel.RegistrationViewModel
 import com.evg.ui.theme.BorderRadius
@@ -59,7 +62,7 @@ import com.evg.ui.theme.lightTextFieldBackground
 @Composable
 fun RegistrationScreen(
     navController: NavHostController,
-    registrationUser: (user: User, callback: (RegistrationStatus) -> Unit) -> Unit,
+    registrationUser: (user: User, callback: (RegistrationState) -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -85,12 +88,31 @@ fun RegistrationScreen(
     val errorEmptyPassword = stringResource(R.string.error_empty_password)
     val errorPasswordLength = stringResource(R.string.error_password_length)
 
-    val registrationCallback: (RegistrationStatus) -> Unit = { registrationStatus ->
-        if (registrationStatus.status == "success") {
-            Toast.makeText(context, successfulRegistration, Toast.LENGTH_SHORT).show()
-            navController.navigate("login")
-        } else if (registrationStatus.status == "fail") {
-            Toast.makeText(context, registrationStatus.message?: serverUnavailable, Toast.LENGTH_SHORT).show()
+    val errorRequestTimeout = stringResource(R.string.request_timeout)
+    val errorTooManyRequests = stringResource(R.string.too_many_requests)
+    val errorServerError = stringResource(R.string.server_error)
+    val errorSerialization = stringResource(R.string.serialization_error)
+    val errorEmailExists = stringResource(R.string.email_exists)
+    val errorUnknown = stringResource(R.string.unknown_error)
+
+    val registrationCallback: (RegistrationState) -> Unit = { registrationState ->
+        when (registrationState) {
+            is RegistrationState.Error -> {
+                val errorMessage = when (registrationState.error) {
+                    RegistrationError.REQUEST_TIMEOUT -> errorRequestTimeout
+                    RegistrationError.TOO_MANY_REQUESTS -> errorTooManyRequests
+                    RegistrationError.SERVER_ERROR -> errorServerError
+                    RegistrationError.SERIALIZATION -> errorSerialization
+                    RegistrationError.EMAIL_EXIST -> errorEmailExists
+                    RegistrationError.PASSWORD_MISMATCH -> errorPasswordMismatch
+                    RegistrationError.UNKNOWN -> errorUnknown
+                }
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+            RegistrationState.Success -> {
+                Toast.makeText(context, successfulRegistration, Toast.LENGTH_SHORT).show()
+                navController.navigate("login")
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 package com.evg.product_info.data.repository
 
 import com.evg.database.domain.repository.DatabaseRepository
+import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.fakeshop_api.domain.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.product_info.domain.mapper.toProduct
 import com.evg.product_info.domain.model.Product
@@ -12,17 +14,22 @@ class ProductInfoRepositoryImpl(
     private val fakeShopApiRepository: FakeShopApiRepository,
     private val databaseRepository: DatabaseRepository,
 ): ProductInfoRepository {
-    override suspend fun getProductById(id: String): Flow<Product?> {
+    override suspend fun getProductById(id: String): Flow<Result<Product?, NetworkError>> {
         if (fakeShopApiRepository.isInternetAvailable()) {
-            val response = fakeShopApiRepository.getProductById(id = id)
+            val result = when(
+                val response = fakeShopApiRepository.getProductById(id = id)
+            ) {
+                is Result.Error -> Result.Error<Product, NetworkError>(response.error)
+                is Result.Success -> Result.Success(response.data.product?.toProduct())
+            }
             return flow {
-                emit(response?.product?.toProduct())
+                emit(result)
             }
         } else {
             val cashed = databaseRepository.getProductsById(id = id)
             return flow {
-                emit(cashed?.toProduct())
-            }
+                Result.Success<Product?, NetworkError>(cashed?.toProduct())
+            } //TODO
         }
     }
 }
