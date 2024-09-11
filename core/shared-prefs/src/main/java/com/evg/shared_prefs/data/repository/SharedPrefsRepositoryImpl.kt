@@ -20,4 +20,11 @@ class SharedPrefsRepositoryImpl(
         return userToken
     }
 
+    override fun resetUserToken() {
+        with(sharedPreferences.edit()) {
+            putString("userToken", null)
+            apply()
+        }
+    }
+
 }

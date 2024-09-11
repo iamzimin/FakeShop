@@ -9,6 +9,7 @@ import com.evg.fakeshop_api.domain.NetworkError
 import com.evg.fakeshop_api.domain.RegistrationError
 import com.evg.fakeshop_api.domain.Result
 import com.evg.fakeshop_api.domain.mapper.toProductDBO
+import com.evg.fakeshop_api.domain.models.AuthenticateResponse
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
@@ -86,6 +87,32 @@ class FakeShopApiRepositoryImpl(
             Result.Error(LoginError.UNKNOWN)
         }
     }
+
+    override suspend fun authenticateUser(
+        token: String
+    ): Result<AuthenticateResponse, NetworkError> {
+        return try {
+            val response = fakeShopApi.authenticateUser(
+                token = "Bearer $token"
+            )
+
+            return Result.Success(response)
+        } catch (e: JsonParseException) {
+            Result.Error(NetworkError.SERIALIZATION)
+        } catch (e: HttpException) {
+            when(e.code()) {
+                408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+                429 -> Result.Error(NetworkError.TOO_MANY_REQUESTS)
+                in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
+                else -> Result.Error(NetworkError.UNKNOWN)
+            }
+        } catch (e: SocketTimeoutException) {
+            Result.Error(NetworkError.REQUEST_TIMEOUT)
+        } catch (e: Exception) {
+            Result.Error(NetworkError.UNKNOWN)
+        }
+    }
+
 
     override suspend fun getAllProductsListByPage(
         page: Int,

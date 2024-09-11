@@ -12,6 +12,7 @@ import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.ProductFilter
 import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.usecase.ProductListUseCases
+import com.evg.product_list.presentation.model.AuthenticateState
 import com.evg.product_list.presentation.model.ProductState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -30,8 +31,35 @@ class ProductListViewModel @Inject constructor(
     private val _products = MutableStateFlow<PagingData<ProductState>>(PagingData.empty())
     val products: StateFlow<PagingData<ProductState>> get() = _products
 
+    private val _isAuthenticateLoading = MutableStateFlow(false)
+    val isAuthenticateLoading: StateFlow<Boolean> = _isAuthenticateLoading
+
     init {
         updateProducts()
+    }
+
+    fun authenticateUser(authenticateCallback: (AuthenticateState) -> Unit) {
+        _isAuthenticateLoading.value = true
+        val token = productListUseCases.getUserTokenUseCase.invoke()
+
+        if (token != null) {
+            viewModelScope.launch {
+                productListUseCases.userAuthenticateUseCase.invoke(token = token)
+                    .collect { result ->
+                        when(result) {
+                            is Result.Error -> {
+                                productListUseCases.resetUserTokenUseCase.invoke()
+                                authenticateCallback(AuthenticateState.Error(error = result.error))
+                            }
+                            is Result.Success -> authenticateCallback(AuthenticateState.Success)
+                        }
+                        _isAuthenticateLoading.value = false
+                    }
+            }
+        } else {
+            authenticateCallback(AuthenticateState.Error(error = NetworkError.UNKNOWN))
+            _isAuthenticateLoading.value = false
+        }
     }
 
     fun updateProducts() {

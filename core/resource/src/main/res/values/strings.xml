@@ -72,6 +72,7 @@
     <string name="email_exists">Email exists</string>
     <string name="password_mismatch">Password mismatch</string>
     <string name="user_not_found">User not found</string>
+    <string name="successful_authentication">Successful authentication</string>
 
 
 

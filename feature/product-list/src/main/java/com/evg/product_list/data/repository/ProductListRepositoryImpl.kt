@@ -15,8 +15,10 @@ import com.evg.product_list.domain.mapper.toProductFilterDTO
 import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.repository.ProductListRepository
 import com.evg.product_list.domain.model.ProductFilter
+import com.evg.product_list.presentation.model.AuthenticateState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class ProductListRepositoryImpl(
@@ -59,6 +61,16 @@ class ProductListRepositoryImpl(
                         } //TODO
                     }
                 }
+        }
+    }
+
+    override suspend fun userAuthenticate(token: String): Flow<Result<Unit, NetworkError>> {
+        return flow {
+            val value = when (val response = fakeShopApi.authenticateUser(token = token)) {
+                is Result.Error -> Result.Error(response.error)
+                is Result.Success -> Result.Success<Unit, NetworkError>(Unit)
+            }
+            emit(value)
         }
     }
 }

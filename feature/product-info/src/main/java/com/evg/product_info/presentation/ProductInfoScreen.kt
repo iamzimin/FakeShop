@@ -72,7 +72,7 @@ fun ProductInfoScreen(
     productId: String,
     productUI: ProductUI?,
     getProductInfo: (id: String, productCallback: (NetworkError) -> Unit) -> Unit,
-    isProductLoading: Boolean,
+    isProductLoading: Boolean, //TODO
 ) {
     val context = LocalContext.current
 

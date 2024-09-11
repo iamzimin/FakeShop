@@ -3,6 +3,7 @@ package com.evg.product_list.presentation
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,11 +27,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -56,6 +60,7 @@ import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.model.Specification
 import com.evg.product_list.presentation.mapper.toProductUI
+import com.evg.product_list.presentation.model.AuthenticateState
 import com.evg.product_list.presentation.model.CategoryUI
 import com.evg.product_list.presentation.model.ProductState
 import com.evg.ui.theme.BorderRadius
@@ -72,15 +77,28 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductListScreen(
     products: LazyPagingItems<ProductState>,
+    navController: NavHostController,
     sortType: () -> SortType,
     setSortType: (SortType) -> Unit,
     setCategoryFilter: (String?) -> Unit,
     setCategoryPageSize: (Int) -> Unit,
     updateProducts: () -> Unit,
+    isAuthenticateLoading: Boolean,
+    authenticateUser: (authenticateCallback: (AuthenticateState) -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
+
+    /*var isInitialized by rememberSaveable { mutableStateOf(false) }
+
+    val errorRequestTimeout = stringResource(R.string.request_timeout)
+    val errorTooManyRequests = stringResource(R.string.too_many_requests)
+    val errorServerError = stringResource(R.string.server_error)
+    val errorSerialization = stringResource(R.string.serialization_error)
+    val errorUnknown = stringResource(R.string.unknown_error)*/
+
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
     var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
+
 
     val firstCategoryRow = listOf(
         CategoryUI(title = stringResource(R.string.automotive), originalName = "automotive"),
@@ -109,6 +127,47 @@ fun ProductListScreen(
 
     var isShowDialog by remember { mutableStateOf(false) }
     var currentOption by remember { mutableStateOf(sortType()) }
+
+    
+    /*if (!isInitialized) {
+        LaunchedEffect(Unit) {
+            authenticateUser { state ->
+                when (state) {
+                    is AuthenticateState.Success -> {}
+                    is AuthenticateState.Error -> {
+                        val errorMessage = when (state.error) {
+                            NetworkError.REQUEST_TIMEOUT -> errorRequestTimeout
+                            NetworkError.TOO_MANY_REQUESTS -> errorTooManyRequests
+                            NetworkError.SERVER_ERROR -> errorServerError
+                            NetworkError.SERIALIZATION -> errorSerialization
+                            NetworkError.UNKNOWN -> errorUnknown
+                        }
+                        navController.navigate("login") {
+                            popUpTo("product_list") {
+                                inclusive = true
+                            }
+                        }
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            isInitialized = true
+        }
+    }
+
+    if (isAuthenticateLoading) {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        return
+    }*/
 
     if (isShowDialog) {
         SortTypeDialog(
@@ -210,12 +269,13 @@ fun ProductListScreen(
                         columns = GridCells.Fixed(2),
                         verticalArrangement = Arrangement.spacedBy(15.dp),
                         horizontalArrangement = Arrangement.spacedBy(30.dp),
-                    )  {
+                    ) {
                         items(10) {
                             ProductTileShimmer()
                         }
                     }
                 }
+
                 is LoadState.Error -> {
                     Box(
                         modifier = Modifier
@@ -229,6 +289,7 @@ fun ProductListScreen(
                         )
                     }
                 }
+
                 is LoadState.NotLoading -> {
                     SwipeRefresh(
                         modifier = Modifier
@@ -263,16 +324,24 @@ fun ProductListScreen(
                                                 productUI = item.product.toProductUI()
                                             )
                                         }
+
                                         is ProductState.Error -> {
                                             val errorMessage = when (item.error) {
                                                 NetworkError.REQUEST_TIMEOUT -> stringResource(R.string.request_timeout)
-                                                NetworkError.TOO_MANY_REQUESTS -> stringResource(R.string.too_many_requests)
+                                                NetworkError.TOO_MANY_REQUESTS -> stringResource(
+                                                    R.string.too_many_requests
+                                                )
+
                                                 NetworkError.SERVER_ERROR -> stringResource(R.string.server_error)
                                                 NetworkError.SERIALIZATION -> stringResource(R.string.serialization_error)
                                                 NetworkError.UNKNOWN -> stringResource(R.string.unknown_error)
                                             }
 
-                                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                context,
+                                                errorMessage,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
                                 }
@@ -403,11 +472,14 @@ fun ProductListScreenPreview() {
 
         ProductListScreen(
             products = flowOf(PagingData.from(emptyList<ProductState>())).collectAsLazyPagingItems(),
+            navController = NavHostController(LocalContext.current),
             sortType = { SortType.DEFAULT },
             setSortType = {},
             setCategoryFilter = {},
             updateProducts = {},
             setCategoryPageSize = {},
+            isAuthenticateLoading = true,
+            authenticateUser = {},
         )
     }
 }
