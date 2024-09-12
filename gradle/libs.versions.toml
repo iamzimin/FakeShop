@@ -53,9 +53,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 # Unit test
 junit = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" } # junit = { group = "junit", name = "junit", version.ref = "junit" }
-# google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-# mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }
-# mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 
 # Retrofit
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }

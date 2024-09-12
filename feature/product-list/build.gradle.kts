@@ -38,11 +38,21 @@ android {
     }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(project(":core:resource"))
     implementation(project(":core:fakeshop-api"))
     implementation(project(":core:shared-prefs"))
     implementation(project(":core:database"))
+
+    // Unit test
+    testImplementation(libs.junit)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
