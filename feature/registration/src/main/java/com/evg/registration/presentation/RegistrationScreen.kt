@@ -4,27 +4,15 @@ import android.content.res.Configuration
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,28 +24,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
-import com.evg.LocalNavHostController
-import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.CustomNavigationBar
 import com.evg.fakeshop_api.domain.RegistrationError
 import com.evg.registration.domain.model.RegistrationState
-import com.evg.registration.domain.model.RegistrationStatus
 import com.evg.resource.R
 import com.evg.registration.domain.model.User
-import com.evg.registration.presentation.viewmodel.RegistrationViewModel
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.HorizontalPadding
 import com.evg.ui.theme.blue
-import com.evg.ui.theme.darkTextFieldBackground
-import com.evg.ui.theme.lightTextFieldBackground
 
 @Composable
 fun RegistrationScreen(
@@ -80,7 +62,6 @@ fun RegistrationScreen(
     ) }
 
     val successfulRegistration = stringResource(R.string.successful_registration)
-    val serverUnavailable = stringResource(R.string.server_unavailable)
 
     val errorEmptyName = stringResource(R.string.error_empty_name)
     val errorInvalidEmail = stringResource(R.string.error_invalid_email)
@@ -227,49 +208,14 @@ fun RegistrationScreen(
 
         val profileIndex = 4
         val items = listOf(
-            stringResource(R.string.search) to Icons.Default.Search,
-            stringResource(R.string.favorites) to Icons.Default.Favorite,
-            stringResource(R.string.ads) to Icons.AutoMirrored.Filled.List,
-            stringResource(R.string.messages) to Icons.Default.Call,
-            stringResource(R.string.profile) to Icons.Default.Person
+            stringResource(R.string.search) to painterResource(R.drawable.avito),
+            stringResource(R.string.favorites) to painterResource(R.drawable.favorite),
+            stringResource(R.string.ads) to painterResource(R.drawable.list),
+            stringResource(R.string.messages) to painterResource(R.drawable.message_bubble),
+            stringResource(R.string.profile) to painterResource(R.drawable.user)
         )
 
-        NavigationBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding(),
-            contentColor = MaterialTheme.colorScheme.primary,
-            containerColor = if (isSystemInDarkTheme()) darkTextFieldBackground else lightTextFieldBackground,
-        ) {
-            items.forEachIndexed { index, item ->
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            imageVector = item.second,
-                            contentDescription = item.first
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = item.first,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontSize = 9.sp,
-                        )
-                    },
-                    selected = index == profileIndex,
-                    onClick = {},
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        selectedTextColor = Color.Unspecified,
-                        indicatorColor = Color.Transparent,
-                        unselectedIconColor = Color.Unspecified,
-                        unselectedTextColor = Color.Unspecified,
-                        disabledIconColor = Color.Unspecified,
-                        disabledTextColor = Color.Unspecified,
-                    )
-                )
-            }
-        }
+        CustomNavigationBar()
     }
 }
 

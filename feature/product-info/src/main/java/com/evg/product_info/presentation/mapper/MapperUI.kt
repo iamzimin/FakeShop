@@ -1,4 +1,4 @@
-package com.evg.product_info.presentation
+package com.evg.product_info.presentation.mapper
 
 import com.evg.product_info.domain.model.Product
 import com.evg.product_info.presentation.model.ProductUI

@@ -46,7 +46,7 @@ import com.valentinilk.shimmer.shimmer
 fun ProductTile(
     productUI: ProductUI,
 ) {
-    //val navController = LocalNavHostController.current
+    val navController = LocalNavHostController.current
 
     val imageSize = 160.dp
 
@@ -55,7 +55,7 @@ fun ProductTile(
             .width(imageSize)
             .padding(bottom = 10.dp)
             .clickable {
-                //navController.navigate("product_info/${productUI.id}")
+                navController.navigate("product_info/${productUI.id}")
             },
     ) {
         SubcomposeAsyncImage(

@@ -12,10 +12,10 @@ val Pink40 = Color(0xFF7D5260)
 
 val blue = Color(0xFF31AFF5)
 val purple = Color(0xFFA368FA)
-val darkTextFieldBackground = Color(0xFF262624)
-val lightTextFieldBackground = Color(0xFFF2F1EF)
+val mainDarkColor = Color(0xFF262624)
+val mainLightColor = Color(0xFFF2F1EF)
 
-val darkButtonBackground = Color(0xFFD4D4D4)
+//val darkButtonBackground = Color(0xFFD4D4D4)
 val lightButtonBackground = Color(0xFFD4D4D4)
 
 val darkSpecText = Color(0xFF9D9D9D)
