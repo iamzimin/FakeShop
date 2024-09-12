@@ -1,8 +1,8 @@
 package com.evg.product_info.data.repository
 
 import com.evg.database.domain.repository.DatabaseRepository
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.product_info.domain.mapper.toProduct
 import com.evg.product_info.domain.model.Product

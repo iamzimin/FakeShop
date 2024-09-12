@@ -6,6 +6,7 @@
     <string name="by_default">By default</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="apply">Apply</string>
 
     <string name="successful_registration">Successful registration</string>
     <string name="logged_account">You are logged in to your account</string>

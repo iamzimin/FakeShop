@@ -2,8 +2,8 @@ package com.evg.fakeshop_api.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.models.ProductFilterDTO
 import com.evg.fakeshop_api.domain.models.ProductResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository

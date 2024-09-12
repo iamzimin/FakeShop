@@ -26,14 +26,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.evg.fakeshop_api.domain.NetworkError
+import com.evg.fakeshop_api.domain.utils.NetworkError
 import com.evg.product_list.presentation.mapper.toProductUI
 import com.evg.product_list.presentation.model.ProductState
 import com.evg.resource.R
 import com.evg.ui.theme.FakeShopTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
@@ -42,7 +41,7 @@ fun ProductVerticalGrid(
     products: LazyPagingItems<ProductState>,
 ) {
     val context = LocalContext.current
-    var isProductsLoadingError: Boolean by rememberSaveable { mutableStateOf(false) }
+    var isProductsLoadingError by rememberSaveable { mutableStateOf(false) }
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
 
     if (isProductsLoadingError) {

@@ -1,6 +1,6 @@
 package com.evg.login.domain.model
 
-import com.evg.fakeshop_api.domain.LoginError
+import com.evg.fakeshop_api.domain.utils.LoginError
 
 sealed class LoginState {
     data object Success : LoginState()

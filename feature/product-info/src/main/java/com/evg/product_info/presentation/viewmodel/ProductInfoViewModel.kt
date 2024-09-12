@@ -2,8 +2,8 @@ package com.evg.product_info.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.product_info.domain.model.Product
 import com.evg.product_info.domain.usecase.ProductInfoUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel

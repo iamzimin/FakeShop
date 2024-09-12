@@ -1,7 +1,7 @@
 package com.evg.registration.data.repository
 
-import com.evg.fakeshop_api.domain.RegistrationError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.RegistrationError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.registration.domain.mapper.toRegistrationBody
 import com.evg.registration.domain.mapper.toRegistrationStatus

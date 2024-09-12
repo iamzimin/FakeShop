@@ -1,9 +1,9 @@
 package com.evg.fakeshop_api.domain.repository
 
-import com.evg.fakeshop_api.domain.LoginError
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.RegistrationError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.LoginError
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.RegistrationError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.models.AuthenticateResponse
 import com.evg.fakeshop_api.domain.models.LoginBody
 import com.evg.fakeshop_api.domain.models.LoginResponse

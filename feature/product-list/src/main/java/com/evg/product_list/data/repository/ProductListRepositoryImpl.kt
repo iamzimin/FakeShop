@@ -6,8 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.evg.database.data.ProductsPageSourceLocal
 import com.evg.fakeshop_api.data.ProductsListPageSourceRemote
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.product_list.domain.mapper.toProduct
 import com.evg.product_list.domain.mapper.toProductFilterDB
@@ -15,9 +15,7 @@ import com.evg.product_list.domain.mapper.toProductFilterDTO
 import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.repository.ProductListRepository
 import com.evg.product_list.domain.model.ProductFilter
-import com.evg.product_list.presentation.model.AuthenticateState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 

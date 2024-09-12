@@ -6,6 +6,7 @@
     <string name="by_default">По умолчанию</string>
     <string name="ascending">По возрастанию</string>
     <string name="descending">По убыванию</string>
+    <string name="apply">Применить</string>
 
     <string name="successful_registration">Регистрация успешна</string>
     <string name="logged_account">Вы вошли в аккаунт</string>

@@ -2,8 +2,7 @@ package com.evg.registration.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.evg.fakeshop_api.domain.RegistrationError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.registration.domain.model.RegistrationState
 import com.evg.registration.domain.model.User
 import com.evg.registration.domain.usecase.RegistrationUseCases

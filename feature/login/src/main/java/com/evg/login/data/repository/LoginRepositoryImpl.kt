@@ -1,8 +1,7 @@
 package com.evg.login.data.repository
 
-import com.evg.fakeshop_api.domain.LoginError
-import com.evg.fakeshop_api.domain.RegistrationError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.LoginError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.login.domain.mapper.toLoginBody
 import com.evg.login.domain.mapper.toLoginStatus

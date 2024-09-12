@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -35,6 +38,7 @@ fun MainScreen() {
     val navController = rememberNavController()
     val sharedPreferencesRepository = SharedPrefsRepositoryImpl(context = LocalContext.current)
     val isUserAuthenticated: Boolean = sharedPreferencesRepository.getUserToken() != null
+    val layoutDirection = LocalLayoutDirection.current
 
     val startDestination = if (isUserAuthenticated) {
         "product_list"
@@ -51,7 +55,11 @@ fun MainScreen() {
         ) { paddingValues ->
             Box(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        start = paddingValues.calculateStartPadding(layoutDirection),
+                        end = paddingValues.calculateEndPadding(layoutDirection)
+                    )
             ) {
                 NavHost(
                     navController = navController,

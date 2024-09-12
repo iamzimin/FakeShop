@@ -48,6 +48,17 @@ fun ProductImagesScroll(
             state = listState,
             horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
         ) {
+            if (productUI.imageURL.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .size(300.dp)
+                            .clip(RoundedCornerShape(BorderRadius)),
+                    ) {
+                        ImageError()
+                    }
+                }
+            }
             itemsIndexed(productUI.imageURL) { _, image ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,42 +86,49 @@ fun ProductImagesScroll(
                             }
                         },
                         error = {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(shape = RoundedCornerShape(BorderRadius))
-                                    .border(
-                                        0.5.dp,
-                                        MaterialTheme.colorScheme.onSurface,
-                                        RoundedCornerShape(BorderRadius)
-                                    )
-                            ) {
-                                Image(
-                                    modifier = Modifier
-                                        .size(70.dp)
-                                        .align(Alignment.Center),
-                                    painter = painterResource(id = R.drawable.error),
-                                    contentDescription = "Error",
-                                    colorFilter = ColorFilter.tint(Pink80),
-                                )
-                            }
+                            ImageError()
                         },
                     )
                 }
             }
         }
-        Text(
+        if (productUI.imageURL.isNotEmpty()) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 10.dp)
+                    .background(
+                        color = Color(0xFF726E68).copy(alpha = 0.8f),
+                        RoundedCornerShape(BorderRadius)
+                    )
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
+                text = "${visibleIndex + 1}-${productUI.imageURL.size}",
+                style = MaterialTheme.typography.titleSmall,
+                color = Color.White,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ImageError() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(shape = RoundedCornerShape(BorderRadius))
+            .border(
+                0.5.dp,
+                MaterialTheme.colorScheme.onSurface,
+                RoundedCornerShape(BorderRadius)
+            )
+    ) {
+        Image(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 10.dp)
-                .background(
-                    color = Color(0xFF726E68).copy(alpha = 0.8f),
-                    RoundedCornerShape(BorderRadius)
-                )
-                .padding(horizontal = 10.dp, vertical = 5.dp),
-            text = "${visibleIndex + 1}-${productUI.imageURL.size}",
-            style = MaterialTheme.typography.titleSmall,
-            color = Color.White,
+                .size(70.dp)
+                .align(Alignment.Center),
+            painter = painterResource(id = R.drawable.error),
+            contentDescription = "Error",
+            colorFilter = ColorFilter.tint(Pink80),
         )
     }
 }

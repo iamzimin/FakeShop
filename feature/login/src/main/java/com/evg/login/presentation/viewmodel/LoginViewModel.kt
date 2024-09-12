@@ -2,9 +2,8 @@ package com.evg.login.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.login.domain.model.LoginState
-import com.evg.login.domain.model.LoginStatus
 import com.evg.login.domain.model.User
 import com.evg.login.domain.usecase.LoginUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel

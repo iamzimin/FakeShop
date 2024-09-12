@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.evg.database.domain.repository.DatabaseRepository
-import com.evg.fakeshop_api.domain.LoginError
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.RegistrationError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.LoginError
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.RegistrationError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.fakeshop_api.domain.mapper.toProductDBO
 import com.evg.fakeshop_api.domain.models.AuthenticateResponse
 import com.evg.fakeshop_api.domain.models.LoginBody
@@ -20,12 +20,8 @@ import com.evg.fakeshop_api.domain.models.RegistrationBody
 import com.evg.fakeshop_api.domain.models.RegistrationResponse
 import com.evg.fakeshop_api.domain.repository.FakeShopApiRepository
 import com.evg.fakeshop_api.domain.service.FakeShopApi
-import com.google.gson.Gson
 import com.google.gson.JsonParseException
-import okhttp3.ResponseBody
-import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
-import retrofit2.Response
 import retrofit2.Retrofit
 import java.net.SocketTimeoutException
 

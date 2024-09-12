@@ -1,7 +1,7 @@
 package com.evg.product_info.domain.usecase
 
-import com.evg.fakeshop_api.domain.NetworkError
-import com.evg.fakeshop_api.domain.Result
+import com.evg.fakeshop_api.domain.utils.NetworkError
+import com.evg.fakeshop_api.domain.utils.Result
 import com.evg.product_info.domain.model.Product
 import com.evg.product_info.domain.repository.ProductInfoRepository
 import kotlinx.coroutines.flow.Flow

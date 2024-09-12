@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.CustomNavigationBar
-import com.evg.fakeshop_api.domain.LoginError
+import com.evg.fakeshop_api.domain.utils.LoginError
 import com.evg.login.domain.model.LoginState
 import com.evg.login.domain.model.User
 import com.evg.resource.R
@@ -49,11 +49,11 @@ fun LoginScreen(
 
     var emailText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
-            TextFieldValue("fdsfss435fgsdfge345dfsf@gmail.com")
+            TextFieldValue("")
         ) }
     var passText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
-            TextFieldValue("123123123")
+            TextFieldValue("")
         ) }
 
     val loggedAccount = stringResource(R.string.logged_account)

@@ -1,4 +1,4 @@
-package com.evg.fakeshop_api.domain
+package com.evg.fakeshop_api.domain.utils
 
 enum class RegistrationError: Error {
     REQUEST_TIMEOUT,

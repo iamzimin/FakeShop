@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.evg.AuthenticationTextField
 import com.evg.CustomNavigationBar
-import com.evg.fakeshop_api.domain.RegistrationError
+import com.evg.fakeshop_api.domain.utils.RegistrationError
 import com.evg.registration.domain.model.RegistrationState
 import com.evg.resource.R
 import com.evg.registration.domain.model.User
@@ -49,16 +49,16 @@ fun RegistrationScreen(
     val context = LocalContext.current
 
     var nameText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("nameee")
+        mutableStateOf(TextFieldValue("")
     ) }
     var emailText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("fdsfss435fgsdfge345dfsf@gmail.com")
+        mutableStateOf(TextFieldValue("")
     ) }
     var passText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("123123123")
+        mutableStateOf(TextFieldValue("")
     ) }
     var pass2Text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("123123123")
+        mutableStateOf(TextFieldValue("")
     ) }
 
     val successfulRegistration = stringResource(R.string.successful_registration)

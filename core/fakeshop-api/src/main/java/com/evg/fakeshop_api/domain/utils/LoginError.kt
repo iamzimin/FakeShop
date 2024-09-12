@@ -1,10 +1,10 @@
-package com.evg.fakeshop_api.domain
+package com.evg.fakeshop_api.domain.utils
 
-enum class NetworkError: Error {
+enum class LoginError: Error {
     REQUEST_TIMEOUT,
     TOO_MANY_REQUESTS,
     SERVER_ERROR,
-    //RESPONSE_FAIL,
     SERIALIZATION,
+    USER_NOT_FOUND,
     UNKNOWN,
 }
