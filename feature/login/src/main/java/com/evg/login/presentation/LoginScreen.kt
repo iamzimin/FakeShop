@@ -149,7 +149,7 @@ fun LoginScreen(
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(BorderRadius),
                 colors = ButtonColors(
-                    containerColor = if (isSystemInDarkTheme()) darkButtonBackground else lightButtonBackground,
+                    containerColor = if (isSystemInDarkTheme()) lightButtonBackground else darkButtonBackground,
                     contentColor = Color.Unspecified,
                     disabledContainerColor = Color.Unspecified,
                     disabledContentColor = Color.Unspecified,
