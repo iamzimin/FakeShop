@@ -17,7 +17,6 @@ fun ProductListRoot(
 
     ProductListScreen(
         products = viewModel.products.collectAsLazyPagingItems(),
-        navController = navController,
         sortType = {
             viewModel.getSortType()
         },
@@ -37,6 +36,7 @@ fun ProductListRoot(
                 pageSize = pageSize
             )
         },
+        navController = navController,
         isAuthenticateLoading = isAuthenticateLoading,
         authenticateUser = { authenticateCallback ->
             viewModel.authenticateUser(

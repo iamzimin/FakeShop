@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -181,78 +182,11 @@ fun ProductInfoScreen(
                     .padding(top = 40.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                Box {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        state = listState,
-                        horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
-                    ) {
-                        itemsIndexed(productUI.imageURL) { _, image ->
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                SubcomposeAsyncImage(
-                                    model = image,
-                                    modifier = Modifier
-                                        .size(300.dp)
-                                        .clip(RoundedCornerShape(BorderRadius)),
-                                    contentDescription = image,
-                                    alignment = Alignment.CenterStart,
-                                    contentScale = ContentScale.Crop,
-                                    loading = {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .clip(shape = RoundedCornerShape(BorderRadius))
-                                                .shimmer(),
-                                        ) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(Color.LightGray)
-                                            )
-                                        }
-                                    },
-                                    error = {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .clip(shape = RoundedCornerShape(BorderRadius))
-                                                .border(
-                                                    0.5.dp,
-                                                    MaterialTheme.colorScheme.onSurface,
-                                                    RoundedCornerShape(BorderRadius)
-                                                )
-                                        ) {
-                                            Image(
-                                                modifier = Modifier
-                                                    .size(70.dp)
-                                                    .align(Alignment.Center),
-                                                painter = painterResource(id = R.drawable.error),
-                                                contentDescription = "Error",
-                                                colorFilter = ColorFilter.tint(Pink80),
-                                            )
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 10.dp)
-                            .background(
-                                color = Color(0xFF726E68).copy(alpha = 0.8f),
-                                RoundedCornerShape(BorderRadius)
-                            )
-                            .padding(horizontal = 10.dp, vertical = 5.dp),
-                        text = "${visibleIndex + 1}-${productUI.imageURL.size}",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.White,
-                    )
-                }
+                ProductImagesScroll(
+                    listState = listState,
+                    productUI = productUI,
+                    visibleIndex = visibleIndex,
+                )
 
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -304,79 +238,17 @@ fun ProductInfoScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    Text(
-                        text = stringResource(R.string.specifications),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        fontSize = 17.sp,
+                    Specifications(
+                        productUI = productUI
                     )
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-
-                    productUI.productSpecifications.forEach { spec ->
-                        Row {
-                            val title = when (spec.key) {
-                                Spec.CATEGORY -> stringResource(R.string.category)
-                                Spec.CONDITION -> stringResource(R.string.condition)
-                                Spec.SIZE -> stringResource(R.string.size)
-                                Spec.FABRIC -> stringResource(R.string.fabric)
-                                Spec.BRAND -> stringResource(R.string.brand)
-                                Spec.COLOR -> stringResource(R.string.color)
-                            }
-
-                            Text(
-                                text = "${title}:",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = if (isSystemInDarkTheme()) darkSpecText else lightSpecText
-                            )
-
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Text(
-                                text = spec.value ?: stringResource(R.string.no_information),
-                                style = MaterialTheme.typography.titleSmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    }
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        fontSize = 17.sp,
+                    ProductDescription(
+                        productUI = productUI,
+                        isDescriptionExpanded = isDescriptionExpanded,
+                        isDescriptionOverflowing = isDescriptionOverflowing,
                     )
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Text(
-                        text = productUI.description,
-                        style = MaterialTheme.typography.titleSmall,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = if (isDescriptionExpanded) 40 else 4,
-                        onTextLayout = { textLayoutResult ->
-                            isDescriptionOverflowing = textLayoutResult.hasVisualOverflow
-                        }
-                    )
-                    if (isDescriptionOverflowing) {
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .clip(RoundedCornerShape(1.dp))
-                                .clickable {
-                                    isDescriptionExpanded = !isDescriptionExpanded
-                                },
-                            style = MaterialTheme.typography.titleSmall,
-                            text = if (isDescriptionExpanded) stringResource(R.string.hide) else stringResource(R.string.read_more),
-                            color = blue
-                        )
-                    }
 
                     Spacer(modifier = Modifier.height(120.dp))
                 }

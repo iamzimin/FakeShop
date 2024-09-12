@@ -1,5 +1,6 @@
 package com.evg.product_list.presentation
 
+import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -69,6 +70,7 @@ import com.evg.ui.theme.HorizontalPadding
 import com.evg.ui.theme.lightButtonBackground
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -77,47 +79,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductListScreen(
     products: LazyPagingItems<ProductState>,
-    navController: NavHostController,
     sortType: () -> SortType,
     setSortType: (SortType) -> Unit,
     setCategoryFilter: (String?) -> Unit,
     setCategoryPageSize: (Int) -> Unit,
     updateProducts: () -> Unit,
+    navController: NavHostController,
     isAuthenticateLoading: Boolean,
     authenticateUser: (authenticateCallback: (AuthenticateState) -> Unit) -> Unit,
 ) {
-    val context = LocalContext.current
-
-    /*var isInitialized by rememberSaveable { mutableStateOf(false) }
-
-    val errorRequestTimeout = stringResource(R.string.request_timeout)
-    val errorTooManyRequests = stringResource(R.string.too_many_requests)
-    val errorServerError = stringResource(R.string.server_error)
-    val errorSerialization = stringResource(R.string.serialization_error)
-    val errorUnknown = stringResource(R.string.unknown_error)*/
-
-    val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
-    var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
-
-    var isProductsLoadingError: Boolean by rememberSaveable { mutableStateOf(false) }
-
-
-    val firstCategoryRow = listOf(
-        CategoryUI(title = stringResource(R.string.automotive), originalName = "automotive"),
-        CategoryUI(title = stringResource(R.string.bags), originalName = "bags"),
-        CategoryUI(title = stringResource(R.string.footwear), originalName = "footwear"),
-        CategoryUI(title = stringResource(R.string.shampoo), originalName = "shampoo"),
-        CategoryUI(title = stringResource(R.string.shorts), originalName = "shorts"),
-    )
-
-    val secondCategoryRow = listOf(
-        CategoryUI(title = stringResource(R.string.table), originalName = "table"),
-        CategoryUI(title = stringResource(R.string.tools), originalName = "tools"),
-        CategoryUI(title = stringResource(R.string.furniture), originalName = "furniture"),
-        CategoryUI(title = stringResource(R.string.hardware), originalName = "hardware"),
-        CategoryUI(title = stringResource(R.string.lamp), originalName = "lamp"),
-    )
-
     val tabList = listOf(
         stringResource(R.string.recommendations),
         stringResource(R.string.latest),
@@ -127,11 +97,15 @@ fun ProductListScreen(
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabList.size })
     val coroutineScope = rememberCoroutineScope()
 
-    var isShowDialog by remember { mutableStateOf(false) }
-    var currentOption by remember { mutableStateOf(sortType()) }
+    /*var isInitialized by rememberSaveable { mutableStateOf(false) }
 
+    val errorRequestTimeout = stringResource(R.string.request_timeout)
+    val errorTooManyRequests = stringResource(R.string.too_many_requests)
+    val errorServerError = stringResource(R.string.server_error)
+    val errorSerialization = stringResource(R.string.serialization_error)
+    val errorUnknown = stringResource(R.string.unknown_error)
 
-    /*if (!isInitialized) {
+    if (!isInitialized) {
         LaunchedEffect(Unit) {
             authenticateUser { state ->
                 when (state) {
@@ -171,60 +145,15 @@ fun ProductListScreen(
         return
     }*/
 
-    if (isShowDialog) {
-        SortTypeDialog(
-            hideDialog = { isShowDialog = false },
-            currentOption = sortType(),
-            selectedOption = {
-                currentOption = it
-            },
-            onConfirm = {
-                setSortType(currentOption)
-                isShowDialog = false
-            },
-        )
-    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 40.dp, start = HorizontalPadding, end = HorizontalPadding),
     ) {
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            items(
-                count = firstCategoryRow.size,
-            ) { index ->
-                CategoryTile(
-                    categoryUI = firstCategoryRow[index],
-                    isSelected = selectedTile == firstCategoryRow[index].originalName,
-                    onTileClick = { selectedCategory ->
-                        setCategoryFilter(selectedCategory)
-                        selectedTile = selectedCategory
-                    }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            items(
-                count = secondCategoryRow.size,
-            ) { index ->
-                CategoryTile(
-                    categoryUI = secondCategoryRow[index],
-                    isSelected = selectedTile == secondCategoryRow[index].originalName,
-                    onTileClick = { selectedCategory ->
-                        setCategoryFilter(selectedCategory)
-                        selectedTile = selectedCategory
-                    }
-                )
-            }
-        }
+        CategoryScroll(
+            setCategoryFilter = setCategoryFilter,
+        )
 
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -264,207 +193,23 @@ fun ProductListScreen(
             modifier = Modifier
                 .weight(1f)
         ) {
-            if (isProductsLoadingError) {
-                SwipeRefresh(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    state = refreshingState,
-                    onRefresh = { updateProducts() },
-                    indicator = { state, trigger ->
-                        SwipeRefreshIndicator(
-                            state = state,
-                            refreshTriggerDistance = trigger,
-                            backgroundColor = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.products_loading_error),
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            }
-
-            when (products.loadState.refresh) {
-                is LoadState.Loading -> {
-                    isProductsLoadingError = false
-
-                    LazyVerticalGrid(
-                        modifier = Modifier.fillMaxWidth(),
-                        columns = GridCells.Fixed(2),
-                        verticalArrangement = Arrangement.spacedBy(15.dp),
-                        horizontalArrangement = Arrangement.spacedBy(30.dp),
-                    ) {
-                        items(10) {
-                            ProductTileShimmer()
-                        }
-                    }
-                }
-
-                is LoadState.Error -> {
-                    isProductsLoadingError = true
-                }
-
-                is LoadState.NotLoading -> {
-                    SwipeRefresh(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        state = refreshingState,
-                        onRefresh = { updateProducts() },
-                        indicator = { state, trigger ->
-                            SwipeRefreshIndicator(
-                                state = state,
-                                refreshTriggerDistance = trigger,
-                                backgroundColor = MaterialTheme.colorScheme.background,
-                                contentColor = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                    ) {
-                        if (products.itemCount == 0) {
-                            isProductsLoadingError = true
-                        }
-
-                        LazyVerticalGrid(
-                            modifier = Modifier.fillMaxWidth(),
-                            columns = GridCells.Fixed(2),
-                            verticalArrangement = Arrangement.spacedBy(15.dp),
-                            horizontalArrangement = Arrangement.spacedBy(30.dp),
-                        ) {
-                            items(
-                                count = products.itemCount,
-                            ) { index ->
-                                val item = products[index]
-                                if (item != null) {
-                                    when (item) {
-                                        is ProductState.Success -> {
-                                            ProductTile(
-                                                productUI = item.product.toProductUI()
-                                            )
-                                        }
-
-                                        is ProductState.Error -> {
-                                            isProductsLoadingError = true
-
-                                            val errorMessage = when (item.error) {
-                                                NetworkError.REQUEST_TIMEOUT -> stringResource(R.string.request_timeout)
-                                                NetworkError.TOO_MANY_REQUESTS -> stringResource(R.string.too_many_requests)
-                                                NetworkError.SERVER_ERROR -> stringResource(R.string.server_error)
-                                                NetworkError.SERIALIZATION -> stringResource(R.string.serialization_error)
-                                                NetworkError.UNKNOWN -> stringResource(R.string.unknown_error)
-                                            }
-
-                                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
+            ProductVerticalGrid(
+                updateProducts = updateProducts,
+                products = products,
+            )
         }
 
-        Row(
-            modifier = Modifier
-                .padding(top = 10.dp, bottom = 45.dp)
-        ) {
-            val buttonSize = 40.dp
-
-            Button(
-                modifier = Modifier.height(buttonSize),
-                shape = RoundedCornerShape(BorderRadius),
-                colors = ButtonColors(
-                    containerColor = lightButtonBackground,
-                    contentColor = Color.Unspecified,
-                    disabledContainerColor = Color.Unspecified,
-                    disabledContentColor = Color.Unspecified,
-                ),
-                onClick = {
-                    isShowDialog = true
-                },
-                contentPadding = PaddingValues(horizontal = 10.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.show_by),
-                    color = Color.Black,
+        BottomButtons(
+            setCategoryPageSize = setCategoryPageSize,
+            sortType = {
+                sortType()
+            },
+            setSortType = { sortType ->
+                setSortType(
+                    sortType
                 )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                modifier = Modifier.size(40.dp),
-                shape = RoundedCornerShape(BorderRadius),
-                colors = ButtonColors(
-                    containerColor = lightButtonBackground,
-                    contentColor = Color.Unspecified,
-                    disabledContainerColor = Color.Unspecified,
-                    disabledContentColor = Color.Unspecified,
-                ),
-                onClick = {
-                    setCategoryPageSize(10)
-                },
-                contentPadding = PaddingValues(0.dp),
-            ) {
-                Text(
-                    text = "10",
-                    color = Color.Black,
-                )
-            }
-
-            Spacer(modifier = Modifier.width(10.dp))
-
-            Button(
-                modifier = Modifier.size(40.dp),
-                shape = RoundedCornerShape(BorderRadius),
-                colors = ButtonColors(
-                    containerColor = lightButtonBackground,
-                    contentColor = Color.Unspecified,
-                    disabledContainerColor = Color.Unspecified,
-                    disabledContentColor = Color.Unspecified,
-                ),
-                onClick = {
-                    setCategoryPageSize(20)
-                },
-                contentPadding = PaddingValues(0.dp),
-            ) {
-                Text(
-                    text = "20",
-                    color = Color.Black,
-                )
-            }
-
-            Spacer(modifier = Modifier.width(10.dp))
-
-            Button(
-                modifier = Modifier.size(40.dp),
-                shape = RoundedCornerShape(BorderRadius),
-                colors = ButtonColors(
-                    containerColor = lightButtonBackground,
-                    contentColor = Color.Unspecified,
-                    disabledContainerColor = Color.Unspecified,
-                    disabledContentColor = Color.Unspecified,
-                ),
-                onClick = {
-                    setCategoryPageSize(30)
-                },
-                contentPadding = PaddingValues(0.dp),
-            ) {
-                Text(
-                    text = "30",
-                    color = Color.Black,
-                )
-            }
-        }
+            },
+        )
     }
 }
 

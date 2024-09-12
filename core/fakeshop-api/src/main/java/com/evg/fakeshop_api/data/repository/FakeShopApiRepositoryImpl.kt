@@ -126,13 +126,13 @@ class FakeShopApiRepositoryImpl(
                 sort = filter.sort.value,
             )
 
-            //throw HttpException(Response.error<Any>(408, "Conflict error".toResponseBody(null)))
-
-            response.productsList?.map { it.toProductDBO() }?.let {
-                databaseRepository.insertProducts(
-                    products = it
-                )
-            }
+            try {
+                response.productsList?.map { it.toProductDBO() }?.let {
+                    databaseRepository.insertProducts(
+                        products = it
+                    )
+                }
+            } catch (_: Exception) { }
 
             return Result.Success(response)
         } catch (e: JsonParseException) {
@@ -159,11 +159,13 @@ class FakeShopApiRepositoryImpl(
                 id = id
             )
 
-            response.product?.toProductDBO()?.let {
-                databaseRepository.insertProduct(
-                    product = it
-                )
-            }
+            try {
+                response.product?.toProductDBO()?.let {
+                    databaseRepository.insertProduct(
+                        product = it
+                    )
+                }
+            } catch (_: Exception) { }
 
             return Result.Success(response)
         } catch (e: JsonParseException) {
