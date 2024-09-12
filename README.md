@@ -33,4 +33,13 @@
 
 Итог: Возможность проверки токена реализовал в соответствии с заданием (если запрос выполнен, то происходит переход к экрану списка продукции, иначе переход на экран логина), но закоментировал.
 
+## Скриншоты
 
+<img src="https://github.com/user-attachments/assets/97d9379f-e9a6-4351-a03a-952e8557e4dc" alt="Image1" width="200"/>
+<img src="https://github.com/user-attachments/assets/07e44488-00e8-4479-b80e-f7a6266881cf" alt="Image2" width="200"/>
+<img src="https://github.com/user-attachments/assets/ebb722f4-1f34-4fd6-bab7-9c3e67e0153c" alt="Image3" width="200"/>
+<img src="https://github.com/user-attachments/assets/2b387d23-9077-46e3-9163-d8addb081d8c" alt="Image4" width="200"/>
+<img src="https://github.com/user-attachments/assets/06ab5a16-f034-4f4e-bd9a-86d168479449" alt="Image5" width="200"/>
+<img src="https://github.com/user-attachments/assets/e54eb486-bac6-4806-8848-90f30969e7bc" alt="Image6" width="200"/>
+<img src="https://github.com/user-attachments/assets/9b1b446e-c0f5-46d2-bf7b-9c0b891cc506" alt="Image7" width="200"/>
+<img src="https://github.com/user-attachments/assets/37130f1c-f286-4548-9f46-4d461c399f10" alt="Image8" width="200"/>
