@@ -1,6 +1,6 @@
 # FakeShop
 
-Стек: Kotlin, Clean Architecture, Jetpack Compose, Coroutine, Retrofit, Room, Dagger Hilt, MVVM.
+Стек: Kotlin, Clean Architecture, Jetpack Compose, Coroutine, Retrofit, Gson, Room, Dagger Hilt, MVVM, Jetpack Navigation, JUnit.
 
 ## Инструкция по запуску
 - [Скачать apk](https://github.com/iamzimin/FakeShop/releases/latest) файл и установить.
