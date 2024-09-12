@@ -131,7 +131,9 @@ fun ProductVerticalGrid(
                                 }
 
                                 is ProductState.Error -> {
-                                    isProductsLoadingError = true
+                                    if (products.itemCount == 0) {
+                                        isProductsLoadingError = true
+                                    }
 
                                     val errorMessage = when (item.error) {
                                         NetworkError.REQUEST_TIMEOUT -> stringResource(R.string.request_timeout)
