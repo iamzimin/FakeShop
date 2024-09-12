@@ -9,6 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,11 +32,10 @@ import com.evg.ui.theme.blue
 @Composable
 fun ProductDescription(
     productUI: ProductUI,
-    isDescriptionExpanded: Boolean,
-    isDescriptionOverflowing: Boolean
 ) {
-    var isDescriptionExpanded1 = isDescriptionExpanded
-    var isDescriptionOverflowing1 = isDescriptionOverflowing
+    var isDescriptionExpanded by remember { mutableStateOf(false) }
+    var isDescriptionOverflowing by remember { mutableStateOf(false) }
+
     Column {
         Text(
             text = stringResource(R.string.description),
@@ -48,21 +51,21 @@ fun ProductDescription(
             text = productUI.description ?: stringResource(R.string.no_information),
             style = MaterialTheme.typography.titleSmall,
             overflow = TextOverflow.Ellipsis,
-            maxLines = if (isDescriptionExpanded1) 40 else 4,
+            maxLines = if (isDescriptionExpanded) 40 else 4,
             onTextLayout = { textLayoutResult ->
-                isDescriptionOverflowing1 = textLayoutResult.hasVisualOverflow
+                isDescriptionOverflowing = textLayoutResult.hasVisualOverflow
             }
         )
-        if (isDescriptionOverflowing1) {
+        if (isDescriptionOverflowing) {
             Text(
                 modifier = Modifier
                     .align(Alignment.End)
                     .clip(RoundedCornerShape(1.dp))
                     .clickable {
-                        isDescriptionExpanded1 = !isDescriptionExpanded1
+                        isDescriptionExpanded = !isDescriptionExpanded
                     },
                 style = MaterialTheme.typography.titleSmall,
-                text = if (isDescriptionExpanded1) stringResource(R.string.hide) else stringResource(
+                text = if (isDescriptionExpanded) stringResource(R.string.hide) else stringResource(
                     R.string.read_more
                 ),
                 color = blue
@@ -112,8 +115,6 @@ fun ProductDescriptionPreview() {
                     ),
                 )
             ),
-            isDescriptionOverflowing = false,
-            isDescriptionExpanded = false,
         )
     }
 }

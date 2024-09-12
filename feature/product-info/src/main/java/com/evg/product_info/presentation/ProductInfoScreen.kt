@@ -63,8 +63,6 @@ fun ProductInfoScreen(
 
     var isInitialized by rememberSaveable { mutableStateOf(false) }
 
-    var isDescriptionExpanded by remember { mutableStateOf(false) }
-    var isDescriptionOverflowing by remember { mutableStateOf(false) }
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
 
     val errorRequestTimeout = stringResource(R.string.request_timeout)
@@ -224,8 +222,6 @@ fun ProductInfoScreen(
 
                     ProductDescription(
                         productUI = productUI,
-                        isDescriptionExpanded = isDescriptionExpanded,
-                        isDescriptionOverflowing = isDescriptionOverflowing,
                     )
 
                     Spacer(modifier = Modifier.height(120.dp))
