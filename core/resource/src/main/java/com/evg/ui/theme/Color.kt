@@ -15,7 +15,7 @@ val purple = Color(0xFFA368FA)
 val mainDarkColor = Color(0xFF262624)
 val mainLightColor = Color(0xFFF2F1EF)
 
-//val darkButtonBackground = Color(0xFFD4D4D4)
+val darkButtonBackground = Color(0xFF262624)
 val lightButtonBackground = Color(0xFFD4D4D4)
 
 val darkSpecText = Color(0xFF9D9D9D)

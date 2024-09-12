@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ import com.evg.resource.R
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.HorizontalPadding
+import com.evg.ui.theme.darkButtonBackground
 import com.evg.ui.theme.lightButtonBackground
 
 @Composable
@@ -147,7 +149,7 @@ fun LoginScreen(
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(BorderRadius),
                 colors = ButtonColors(
-                    containerColor = lightButtonBackground,
+                    containerColor = if (isSystemInDarkTheme()) darkButtonBackground else lightButtonBackground,
                     contentColor = Color.Unspecified,
                     disabledContainerColor = Color.Unspecified,
                     disabledContentColor = Color.Unspecified,
@@ -166,7 +168,10 @@ fun LoginScreen(
                     }
                 }
             ) {
-                Text(text = stringResource(R.string.enter))
+                Text(
+                    text = stringResource(R.string.enter),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
             Spacer(modifier = Modifier.height(50.dp))
         }
