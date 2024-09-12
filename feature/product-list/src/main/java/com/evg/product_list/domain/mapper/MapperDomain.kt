@@ -12,9 +12,6 @@ import com.evg.product_list.domain.model.Product
 import com.evg.product_list.domain.model.ProductFilter
 import com.evg.product_list.domain.model.SortType
 import com.evg.product_list.domain.model.Specification
-import com.evg.product_list.presentation.model.ProductUI
-import java.text.NumberFormat
-import java.util.Locale
 
 fun ProductFilter.toProductFilterDTO(): ProductFilterDTO {
     return ProductFilterDTO(

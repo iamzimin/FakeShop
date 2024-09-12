@@ -24,6 +24,11 @@ class ProductListRepositoryImpl(
     private val productsListPageSourceRemote: ProductsListPageSourceRemote,
     private val productsPageSourceLocal: ProductsPageSourceLocal,
 ): ProductListRepository {
+    /**
+     * Возвращает список всех продуктов с применением фильтра [filter].
+     * Если интернет доступен, загружает данные с удаленного источника.
+     * В противном случае загружает данные из локального кэша.
+     */
     override suspend fun getAllProductsList(filter: ProductFilter): Flow<PagingData<Result<Product, NetworkError>>> {
         return if (fakeShopApi.isInternetAvailable()) {
             Pager(
@@ -62,6 +67,9 @@ class ProductListRepositoryImpl(
         }
     }
 
+    /**
+     * Выполняет аутентификацию пользователя с токеном [token] и возвращает результат.
+     */
     override suspend fun userAuthenticate(token: String): Flow<Result<Unit, NetworkError>> {
         return flow {
             val value = when (val response = fakeShopApi.authenticateUser(token = token)) {

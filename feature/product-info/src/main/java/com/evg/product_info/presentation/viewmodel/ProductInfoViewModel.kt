@@ -22,6 +22,10 @@ class ProductInfoViewModel @Inject constructor(
     private val _isProductLoading = MutableStateFlow(true)
     val isProductLoading: StateFlow<Boolean> = _isProductLoading
 
+    /**
+     * Загружает информацию о продукте по его идентификатору [id] и обновляет состояние [_productInfo].
+     * В случае ошибки вызывает [productCallback] с ошибкой [NetworkError].
+     */
     fun getProductInfo(id: String, productCallback: (NetworkError) -> Unit) {
         viewModelScope.launch {
             _isProductLoading.value = true

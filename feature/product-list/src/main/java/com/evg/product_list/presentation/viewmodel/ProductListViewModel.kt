@@ -34,6 +34,10 @@ class ProductListViewModel @Inject constructor(
         updateProducts()
     }
 
+    /**
+     * Выполняет аутентификацию пользователя, используя сохраненный токен.
+     * Обновляет состояние [_isAuthenticateLoading] и вызывает [authenticateCallback] с результатом.
+     */
     fun authenticateUser(authenticateCallback: (AuthenticateState) -> Unit) {
         _isAuthenticateLoading.value = true
         val token = productListUseCases.getUserTokenUseCase.invoke()
@@ -58,6 +62,9 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Обновляет список продуктов, используя текущий фильтр.
+     */
     fun updateProducts() {
         viewModelScope.launch {
             productListUseCases.getAllProductsList.invoke(filter = filter.value)
@@ -74,20 +81,32 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Устанавливает фильтр по категории [category] и обновляет список продуктов.
+     */
     fun setCategoryFilter(category: String?) {
         filter.value = filter.value.copy(category = category)
         updateProducts()
     }
 
+    /**
+     * Устанавливает размер страницы [pageSize] и обновляет список продуктов.
+     */
     fun setCategoryPageSize(pageSize: Int) {
         filter.value = filter.value.copy(pageSize = pageSize)
         updateProducts()
     }
 
+    /**
+     * Устанавливает тип сортировки [sortType] и обновляет список продуктов.
+     */
     fun setSortType(sortType: SortType) {
         filter.value = filter.value.copy(sort = sortType)
         updateProducts()
     }
+    /**
+     * Возвращает текущий тип сортировки.
+     */
     fun getSortType() = filter.value.sort
 
 }

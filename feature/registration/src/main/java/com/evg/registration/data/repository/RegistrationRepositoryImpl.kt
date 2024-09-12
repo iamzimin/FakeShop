@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.flow
 class RegistrationRepositoryImpl(
     private val fakeShopApiRepository: FakeShopApiRepository,
 ): RegistrationRepository {
+    /**
+     * Выполняет регистрацию пользователя [user] и возвращает результат.
+     */
     override suspend fun registrationUser(user: User): Flow<Result<RegistrationStatus, RegistrationError>> {
         return flow {
             val regUser = fakeShopApiRepository.registrationUser(registrationBody = user.toRegistrationBody())

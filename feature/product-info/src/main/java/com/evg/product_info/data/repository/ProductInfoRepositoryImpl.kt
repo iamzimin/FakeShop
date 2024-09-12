@@ -14,6 +14,11 @@ class ProductInfoRepositoryImpl(
     private val fakeShopApiRepository: FakeShopApiRepository,
     private val databaseRepository: DatabaseRepository,
 ): ProductInfoRepository {
+    /**
+     * Возвращает продукт по его идентификатору [id].
+     * Если интернет доступен, загружает данные из API.
+     * В противном случае пытается получить данные из кэша базы данных.
+     */
     override suspend fun getProductById(id: String): Flow<Result<Product?, NetworkError>> {
         if (fakeShopApiRepository.isInternetAvailable()) {
             val result = when(

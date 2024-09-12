@@ -62,7 +62,10 @@ fun ProductListScreen(
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabList.size })
     val coroutineScope = rememberCoroutineScope()
 
-    /*var isInitialized by rememberSaveable { mutableStateOf(false) }
+    /*
+    // Не используется, так как на сервере не работает проверка токена
+
+    var isInitialized by rememberSaveable { mutableStateOf(false) }
 
     val errorRequestTimeout = stringResource(R.string.request_timeout)
     val errorTooManyRequests = stringResource(R.string.too_many_requests)

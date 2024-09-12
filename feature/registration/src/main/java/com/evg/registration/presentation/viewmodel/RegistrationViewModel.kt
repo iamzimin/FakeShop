@@ -14,6 +14,9 @@ import javax.inject.Inject
 class RegistrationViewModel @Inject constructor(
     private val registrationUseCases: RegistrationUseCases
 ): ViewModel() {
+    /**
+     * Выполняет регистрацию пользователя [user] и вызывает [registrationCallback] с результатом.
+     */
     fun registrationUser(user: User, registrationCallback: (RegistrationState) -> Unit) {
         viewModelScope.launch {
             registrationUseCases.registrationUseCase.invoke(user = user)

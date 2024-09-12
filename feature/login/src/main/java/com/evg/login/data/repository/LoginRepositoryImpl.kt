@@ -16,6 +16,10 @@ class LoginRepositoryImpl(
     private val fakeShopApiRepository: FakeShopApiRepository,
     private val sharedPrefsRepository: SharedPrefsRepository,
 ): LoginRepository {
+    /**
+     * Выполняет вход пользователя с данными [user] и возвращает результат [Result]
+     * с [LoginStatus] или ошибкой [LoginError].
+     */
     override suspend fun loginUser(user: User): Flow<Result<LoginStatus, LoginError>> {
         return flow {
             val logUser = fakeShopApiRepository.loginUser(loginBody = user.toLoginBody())
@@ -27,6 +31,9 @@ class LoginRepositoryImpl(
         }
     }
 
+    /**
+     * Сохраняет токен пользователя [token] в SharedPreferences.
+     */
     override fun saveUserToken(token: String) {
         sharedPrefsRepository.saveUserToken(token = token)
     }

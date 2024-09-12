@@ -14,6 +14,10 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCases: LoginUseCases,
 ): ViewModel() {
+    /**
+     * Выполняет вход пользователя с данными [user] и передает состояние [LoginState]
+     * через [loginCallback].
+     */
     fun loginUser(user: User, loginCallback: (LoginState) -> Unit) {
         viewModelScope.launch {
             loginUseCases.loginUseCase.invoke(user = user)

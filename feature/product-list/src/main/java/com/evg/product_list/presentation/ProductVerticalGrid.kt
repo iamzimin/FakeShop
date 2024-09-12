@@ -131,7 +131,7 @@ fun ProductVerticalGrid(
                                 }
 
                                 is ProductState.Error -> {
-                                    if (products.itemCount == 0) {
+                                    if (products.itemCount <= 1) {
                                         isProductsLoadingError = true
                                     }
 

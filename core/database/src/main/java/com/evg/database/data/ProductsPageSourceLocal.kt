@@ -14,12 +14,19 @@ class ProductsPageSourceLocal @Inject constructor(
 ): PagingSource<Int, ProductDBO>() {
     var filter = ProductFilterDB()
 
+    /**
+     * Возвращает ключ для обновления данных на основе текущего состояния [state].
+     */
     override fun getRefreshKey(state: PagingState<Int, ProductDBO>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
         val page = state.closestPageToPosition(anchorPosition) ?: return null
         return page.prevKey?.plus(1) ?: page.nextKey?.minus(1)
     }
 
+    /**
+     * Загружает данные страницы [params], возвращает результат с ключами для
+     * предыдущей и следующей страницы.
+     */
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductDBO> {
         val page = params.key ?: 0
 
