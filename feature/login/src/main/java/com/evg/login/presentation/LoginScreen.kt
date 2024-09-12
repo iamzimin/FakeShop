@@ -170,7 +170,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = stringResource(R.string.enter),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.surface,
                 )
             }
             Spacer(modifier = Modifier.height(50.dp))
