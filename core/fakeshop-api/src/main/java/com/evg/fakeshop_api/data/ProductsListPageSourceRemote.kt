@@ -30,8 +30,16 @@ class ProductsListPageSourceRemote @Inject constructor(
 
         return when (response) {
             is Result.Success -> {
-                val products = response.data.productsList ?: return LoadResult.Error(Exception("")) //TODO
-                val count = response.data.count ?: return LoadResult.Error(Exception(""))
+                val products = response.data.productsList ?: return LoadResult.Page(
+                    data = listOf(Result.Error(NetworkError.UNKNOWN)),
+                    prevKey = null,
+                    nextKey = null
+                )
+                val count = response.data.count ?: return LoadResult.Page(
+                    data = listOf(Result.Error(NetworkError.UNKNOWN)),
+                    prevKey = null,
+                    nextKey = null
+                )
 
                 val nextPage = if (count >= products.size) {
                     page + 1

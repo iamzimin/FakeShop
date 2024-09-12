@@ -20,6 +20,7 @@
     <string name="have_account_enter">Do you have an account? Enter</string>
     <string name="no_account_register">No account? Register</string>
     <string name="products_loading_error">Products loading error. Swipe to refresh</string>
+    <string name="product_loading_error">Product loading error. Swipe to refresh</string>
 
     <string name="error_empty_name">Name cannot be empty</string>
     <string name="error_invalid_email">Invalid email address</string>

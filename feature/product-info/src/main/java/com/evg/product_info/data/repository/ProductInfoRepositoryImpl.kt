@@ -28,12 +28,13 @@ class ProductInfoRepositoryImpl(
         } else {
             val cashed = databaseRepository.getProductsById(id = id)
             return flow {
-                try {
+                val product = try {
                     Result.Success<Product?, NetworkError>(cashed?.toProduct())
                 } catch (e: Exception) {
                     Result.Error(NetworkError.UNKNOWN)
                 }
-            } //TODO
+                emit(product)
+            }
         }
     }
 }

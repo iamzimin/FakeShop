@@ -58,7 +58,7 @@ class ProductListRepositoryImpl(
                             Result.Success(productDB.toProduct())
                         } catch (e: Exception) {
                             Result.Error(NetworkError.UNKNOWN)
-                        } //TODO
+                        }
                     }
                 }
         }

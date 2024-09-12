@@ -99,6 +99,8 @@ fun ProductListScreen(
     val refreshingState = rememberSwipeRefreshState(isRefreshing = false)
     var selectedTile: String? by rememberSaveable { mutableStateOf(null) }
 
+    var isProductsLoadingError: Boolean by rememberSaveable { mutableStateOf(false) }
+
 
     val firstCategoryRow = listOf(
         CategoryUI(title = stringResource(R.string.automotive), originalName = "automotive"),
@@ -128,7 +130,7 @@ fun ProductListScreen(
     var isShowDialog by remember { mutableStateOf(false) }
     var currentOption by remember { mutableStateOf(sortType()) }
 
-    
+
     /*if (!isInitialized) {
         LaunchedEffect(Unit) {
             authenticateUser { state ->
@@ -262,8 +264,39 @@ fun ProductListScreen(
             modifier = Modifier
                 .weight(1f)
         ) {
+            if (isProductsLoadingError) {
+                SwipeRefresh(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    state = refreshingState,
+                    onRefresh = { updateProducts() },
+                    indicator = { state, trigger ->
+                        SwipeRefreshIndicator(
+                            state = state,
+                            refreshTriggerDistance = trigger,
+                            backgroundColor = MaterialTheme.colorScheme.background,
+                            contentColor = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.products_loading_error),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
+
             when (products.loadState.refresh) {
                 is LoadState.Loading -> {
+                    isProductsLoadingError = false
+
                     LazyVerticalGrid(
                         modifier = Modifier.fillMaxWidth(),
                         columns = GridCells.Fixed(2),
@@ -277,17 +310,7 @@ fun ProductListScreen(
                 }
 
                 is LoadState.Error -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.products_loading_error),
-                            textAlign = TextAlign.Center,
-                        )
-                    }
+                    isProductsLoadingError = true
                 }
 
                 is LoadState.NotLoading -> {
@@ -305,8 +328,10 @@ fun ProductListScreen(
                             )
                         },
                     ) {
+                        if (products.itemCount == 0) {
+                            isProductsLoadingError = true
+                        }
 
-                        // TODO products.size - 0
                         LazyVerticalGrid(
                             modifier = Modifier.fillMaxWidth(),
                             columns = GridCells.Fixed(2),
@@ -326,22 +351,17 @@ fun ProductListScreen(
                                         }
 
                                         is ProductState.Error -> {
+                                            isProductsLoadingError = true
+
                                             val errorMessage = when (item.error) {
                                                 NetworkError.REQUEST_TIMEOUT -> stringResource(R.string.request_timeout)
-                                                NetworkError.TOO_MANY_REQUESTS -> stringResource(
-                                                    R.string.too_many_requests
-                                                )
-
+                                                NetworkError.TOO_MANY_REQUESTS -> stringResource(R.string.too_many_requests)
                                                 NetworkError.SERVER_ERROR -> stringResource(R.string.server_error)
                                                 NetworkError.SERIALIZATION -> stringResource(R.string.serialization_error)
                                                 NetworkError.UNKNOWN -> stringResource(R.string.unknown_error)
                                             }
 
-                                            Toast.makeText(
-                                                context,
-                                                errorMessage,
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+                                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                 }
@@ -355,7 +375,7 @@ fun ProductListScreen(
 
         Row(
             modifier = Modifier
-                .padding(vertical = 10.dp)
+                .padding(top = 10.dp, bottom = 45.dp)
         ) {
             val buttonSize = 40.dp
 

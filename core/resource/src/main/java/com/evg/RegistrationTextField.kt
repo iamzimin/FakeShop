@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.evg.ui.theme.BorderRadius
 import com.evg.ui.theme.FakeShopTheme
 import com.evg.ui.theme.blue
@@ -44,9 +46,16 @@ fun AuthenticationTextField(
     TextField(
         modifier = Modifier
             .fillMaxWidth()
+            .height(53.dp)
             .clip(RoundedCornerShape(BorderRadius)),
         singleLine = true,
-        placeholder = { Text(placeholder) },
+        placeholder = { Text(
+            text = placeholder,
+            fontSize = 14.sp,
+        ) },
+        textStyle = LocalTextStyle.current.copy(
+            fontSize = 14.sp
+        ),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
             unfocusedContainerColor = backgroundColor,

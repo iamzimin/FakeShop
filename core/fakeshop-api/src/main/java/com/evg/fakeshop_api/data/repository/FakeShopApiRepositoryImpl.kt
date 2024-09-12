@@ -80,7 +80,7 @@ class FakeShopApiRepositoryImpl(
                 429 -> Result.Error(LoginError.TOO_MANY_REQUESTS)
                 in 500..599 -> Result.Error(LoginError.SERVER_ERROR)
                 else -> Result.Error(LoginError.UNKNOWN)
-            } //TODO
+            }
         } catch (e: SocketTimeoutException) {
             Result.Error(LoginError.REQUEST_TIMEOUT)
         } catch (e: Exception) {

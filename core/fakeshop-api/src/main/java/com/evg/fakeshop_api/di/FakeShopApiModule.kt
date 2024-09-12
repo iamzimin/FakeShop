@@ -23,16 +23,16 @@ object FakeShopApiModule {
     @Provides
     @Singleton
     fun provideFakeShopApiRetrofit(): Retrofit {
-        val loggingInterceptor = HttpLoggingInterceptor().apply { //TODO
+        /*val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .build()
+            .build()*/
 
         val retrofit = Retrofit.Builder()
-            .client(okHttpClient)
+            //.client(okHttpClient)
             .baseUrl("https://fakeshopapi-l2ng.onrender.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()

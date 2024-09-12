@@ -82,12 +82,12 @@ fun SortTypeDialog(
         dismissButton = { },
         confirmButton = {
             Button(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(BorderRadius),
                 onClick = {
                     onConfirm()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(BorderRadius)) // TODO
             ) {
                 Text(
                     text = "Apply",
