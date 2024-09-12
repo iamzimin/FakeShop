@@ -337,6 +337,8 @@ fun ProductInfoScreen(
                             Text(
                                 text = spec.value ?: stringResource(R.string.no_information),
                                 style = MaterialTheme.typography.titleSmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }

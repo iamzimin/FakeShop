@@ -127,7 +127,7 @@ fun LoginScreen(
 
             val spaceBetweenTextFields = 15.dp
             AuthenticationTextField(
-                placeholder = stringResource(R.string.email),
+                placeholder = stringResource(R.string.phone_or_email),
                 value = emailText,
                 onValueChange = { newText ->
                     emailText = newText

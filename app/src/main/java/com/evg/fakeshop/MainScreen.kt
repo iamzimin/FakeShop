@@ -1,6 +1,8 @@
 package com.evg.fakeshop
 
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +41,9 @@ fun MainScreen() {
     } else {
         "registration"
     }
+
+    val activity = (LocalContext.current as Activity)
+    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     CompositionLocalProvider(LocalNavHostController provides navController) {
         Scaffold(

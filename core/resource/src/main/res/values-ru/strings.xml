@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">FakeShop</string>
+
+
+    <string name="sort">Сортировка</string>
+    <string name="by_default">По умолчанию</string>
+    <string name="ascending">По возрастанию</string>
+    <string name="descending">По убыванию</string>
+
+    <string name="successful_registration">Регистрация успешна</string>
+    <string name="logged_account">Вы вошли в аккаунт</string>
+    <string name="server_unavailable">Сервер недоступен</string>
+
+    <string name="registration">Регистрация</string>
+    <string name="login">Вход</string>
+    <string name="name">Имя</string>
+    <string name="email">Электронная почта</string>
+    <string name="phone_or_email">Телефон или почта</string>
+    <string name="password">Пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="have_account_enter">У вас есть аккаунт? Войти</string>
+    <string name="no_account_register">Нет аккаунта? Зарегистрируйтесь</string>
+    <string name="products_loading_error">Ошибка загрузки товаров. Потяните для обновления</string>
+    <string name="product_loading_error">Ошибка загрузки товара. Потяните для обновления</string>
+
+    <string name="error_empty_name">Имя не может быть пустым</string>
+    <string name="error_invalid_email">Неверный адрес эл. почты</string>
+    <string name="error_password_mismatch">Пароли не совпадают</string>
+    <string name="error_empty_password">Пароль не может быть пустым</string>
+    <string name="error_password_length">Максимальная длина пароля — 24 символа</string>
+
+    <string name="enter">Войти</string>
+    <string name="search">Поиск</string>
+    <string name="favorites">Избранное</string>
+    <string name="ads">Объявления</string>
+    <string name="messages">Сообщения</string>
+    <string name="profile">Профиль</string>
+
+    <string name="buy">Купить</string>
+    <string name="show_by">Показать по</string>
+    <string name="no_information">Информация отсутствует</string>
+    <string name="hide">Скрыть</string>
+    <string name="read_more">Читать далее</string>
+    <string name="description">Описание</string>
+    <string name="specifications">Характеристики</string>
+
+    <string name="category">Категория</string>
+    <string name="condition">Состояние</string>
+    <string name="size">Размер</string>
+    <string name="fabric">Материал основной части</string>
+    <string name="brand">Бренд</string>
+    <string name="color">Цвет</string>
+
+    <string name="recommendations">Рекомендации</string>
+    <string name="latest">Свежее</string>
+    <string name="nearby">Рядом</string>
+
+    <string name="automotive">Автомобили</string>
+    <string name="bags">Сумки</string>
+    <string name="footwear">Обувь</string>
+    <string name="shampoo">Шампунь</string>
+    <string name="shorts">Шорты</string>
+    <string name="table">Стол</string>
+    <string name="tools">Инструменты</string>
+    <string name="furniture">Мебель</string>
+    <string name="hardware">Фурнитура</string>
+    <string name="lamp">Лампа</string>
+
+    <string name="request_timeout">Время ожидания запроса истекло</string>
+    <string name="too_many_requests">Слишком много запросов</string>
+    <string name="server_error">Ошибка сервера</string>
+    <string name="serialization_error">Ошибка сериализации</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="email_exists">Эл. почта уже существует</string>
+    <string name="password_mismatch">Несоответствие паролей</string>
+    <string name="user_not_found">Пользователь не найден</string>
+    <string name="successful_authentication">Аутентификация успешна</string>
+
+
+</resources>

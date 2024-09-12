@@ -15,6 +15,7 @@
     <string name="login">Login</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
+    <string name="phone_or_email">Phone or email</string>
     <string name="password">Password</string>
     <string name="repeat_password">Repeat password</string>
     <string name="have_account_enter">Do you have an account? Enter</string>

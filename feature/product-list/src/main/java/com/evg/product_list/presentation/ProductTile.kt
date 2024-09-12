@@ -46,8 +46,7 @@ import com.valentinilk.shimmer.shimmer
 fun ProductTile(
     productUI: ProductUI,
 ) {
-    val context = LocalContext.current
-    val navController = LocalNavHostController.current
+    //val navController = LocalNavHostController.current
 
     val imageSize = 160.dp
 
@@ -56,7 +55,7 @@ fun ProductTile(
             .width(imageSize)
             .padding(bottom = 10.dp)
             .clickable {
-                navController.navigate("product_info/${productUI.id}")
+                //navController.navigate("product_info/${productUI.id}")
             },
     ) {
         SubcomposeAsyncImage(
@@ -107,17 +106,13 @@ fun ProductTile(
         Spacer(modifier = Modifier.height(5.dp))
 
 
-        Column(
-            modifier = Modifier
-                .height(35.dp)
-        ) {
-            Text(
-                text = productUI.name,
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
+        Text(
+            text = productUI.name,
+            style = MaterialTheme.typography.bodySmall,
+            maxLines = 2,
+            minLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
 
         Column(
             modifier = Modifier.height(50.dp)

@@ -64,39 +64,33 @@ fun ProductTileShimmer() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-
-        Column(
-            modifier = Modifier
-                .height(35.dp)
+        Box(
+            modifier = Modifier.shimmer(),
         ) {
             Box(
-                modifier = Modifier.shimmer(),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(imageSize)
-                        .clip(shape = RoundedCornerShape(BorderRadius))
-                        .background(shimmerColor)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Box(
-                modifier = Modifier.shimmer(),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(12.dp)
-                        .width(imageSize)
-                        .clip(shape = RoundedCornerShape(BorderRadius))
-                        .background(shimmerColor)
-                )
-            }
+                modifier = Modifier
+                    .height(12.dp)
+                    .width(imageSize)
+                    .clip(shape = RoundedCornerShape(BorderRadius))
+                    .background(shimmerColor)
+            )
         }
 
-        Spacer(modifier = Modifier.height(3.dp))
+        Spacer(modifier = Modifier.height(5.dp))
+
+        Box(
+            modifier = Modifier.shimmer(),
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(12.dp)
+                    .width(imageSize)
+                    .clip(shape = RoundedCornerShape(BorderRadius))
+                    .background(shimmerColor)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(5.dp))
 
         Column(
             modifier = Modifier.height(50.dp)
