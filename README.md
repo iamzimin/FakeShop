@@ -1,4 +1,4 @@
-# FakeShop
+# FakeShop (API недоступно)
 
 Стек: Kotlin, Clean Architecture, Jetpack Compose, Coroutine, Retrofit, Gson, Room, Dagger Hilt, MVVM, Jetpack Navigation, JUnit.
 
@@ -17,21 +17,6 @@
 4. **Экран продукта:** Подробная информация о продукте (фото, цена, название, категория, описание). Обработка отсутствующих данных и изображений.
 
 #
-
-Проблемы:
-1. Сортировка по возростанию/убыванию. При сортировке по полю price нарушается последовательность, так как в некоторых объявлениях основаня цена указана с учётом скидки.
-Пытался решить путём сортировки по полю "discounted_price", но в таком случае появляются дубликаты объявлений
-Например, _id 64d7e7d7e03347cdf0b576bd появляется дважды
-[по запросу №1](https://fakeshopapi-l2ng.onrender.com/app/v1/products?page=1&limit=10&sort=discounted_price) и
-[по запросу №2](https://fakeshopapi-l2ng.onrender.com/app/v1/products?page=2&limit=10&sort=discounted_price)
-
-Итог: сортировал по полю price.
-
-2. Не получилось отправлять token в header запроса /users/auth/login при последующих входах в приложение,
-так как при отправке [GET запроса](https://fakeshopapi-l2ng.onrender.com/app/v1/users/auth/login) с токеном возникает ошибка 404.
-[Пример из документации](https://fake-shopapi.netlify.app/docs/auth#getProfile).
-
-Итог: Возможность проверки токена реализовал в соответствии с заданием (если запрос выполнен, то происходит переход к экрану списка продукции, иначе переход на экран логина), но закоментировал.
 
 ## Скриншоты
 
